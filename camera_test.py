@@ -6,6 +6,8 @@ import picamera.array
 import time
 import subprocess
 
+videoIDlist = []
+
 class DetectMotion(picamera.array.PiMotionAnalysis):
     def __init__(self, camera, size = None):
         super(DetectMotion, self).__init__(camera, size)
@@ -18,7 +20,7 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
     def analyse(self, a):
         a = np.sqrt(np.square(a['x'].astype(np.float)) + np.square(a['y'].astype(np.float))).clip(0, 255).astype(np.uint8) # compute vector from both directions
         if (a > 21).sum() > 7:  # If there're more than 7 vectors with a magnitude greater than 21, then say we've detected motion
-            print "motion detected! {0}".format((a > 21).sum())
+            print "motion detected! {0} motions: {1}".format((a > 21).sum(), self.__motionsInLastClip)
             self.__lastMotion = time.time()
             self.__motionsInLastClip += 1
             if not self.__recording:
@@ -27,11 +29,11 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
                 self.__recording = True
                 self.__motionsInLastClip = 0
                 print "start recording clip {0}".format(self.__filename)
-                self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "start recording clip {0}\n".format(self.__motionCounter))
+                self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "start recording clip {0}\n".format(self.__filename))
         if self.__recording and time.time() - self.__lastMotion > 2.0:
             self.__camera.split_recording('/dev/null', splitter_port=1)
             self.__recording = False
-            print "stop recording clip {0}".format(self.__filename)
+            print "stop recording clip {0} motions: {1}".format(self.__filename, self.__motionsInLastClip)
             self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "stop recording clip {0}\n".format(self.__filename))
             if self.__motionsInLastClip != 0:
                 videoIDlist.append(self.__filename)
@@ -69,10 +71,8 @@ with picamera.PiCamera() as camera:
                     print executionString
                     log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + executionString + "\n")
                     subprocess.Popen(executionString, shell=True)
-                if shutdownRequested:
-                    break
-                else:
-                    time.sleep(1)
+                
+                time.sleep(1)
             
         except KeyboardInterrupt:
             print "stopping"
@@ -80,7 +80,4 @@ with picamera.PiCamera() as camera:
         finally:
             camera.stop_recording(splitter_port=2)
             camera.stop_recording(splitter_port=1)
-            if shutdownRequested:
-                print "will shut down now"
-                log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "will shut down now\n")
-                subprocess.Popen("shutdown -h now", shell=True)
+            
