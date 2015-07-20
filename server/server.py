@@ -134,6 +134,7 @@ def api_delete_video(video):
 @app.route("/api/ping")
 @requires_auth
 def api_settings():
+    SETTINGS = load_settings()
     return Response(json.dumps(SETTINGS), 200, mimetype="application/json")
 
 ######### SETUP #########
