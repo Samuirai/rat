@@ -96,6 +96,12 @@ def save_settings(form):
 def index():
     return render_template('index.html', videos=get_all_videos())
 
+@app.route("/log")
+@requires_auth
+def log_get():
+    logs = "example\nasdlol"
+    return render_template('log.html', logs=logs)
+
 @app.route("/settings", methods=['GET', 'POST'])
 @requires_auth
 def setings():
@@ -111,12 +117,14 @@ def setings():
 ######### API #########
 
 @app.route("/api/settings/save", methods=['POST'])
+@requires_auth
 def api_setings_save():
     save_settings(request.form)
     return Response(json.dumps(SETTINGS), 200, mimetype="application/json")
 
 
 @app.route("/api/delete/<video>")
+@requires_auth
 def api_delete_video(video):
     if video:
         remove(path.join(FOLDER_VIDEO, video))
