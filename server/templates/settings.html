@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <title>RAT</title>
+        <style>
+
+* {
+    font-family: Helvetica, Arial, sans-serif
+}
+
+        </style>
+    </head>
+    <body>
+        <div id="header">
+
+        </div>
+        <h1>Hello World</h1>
+
+        
+        <div id="content">
+          <form action="" method="post">
+            <div>
+              minimum action length: 
+              <input type="text" name="min_len" value={{settings['min_len']}}>
+            </div>
+            <div>
+              maximum action length: 
+              <input type="text" name="max_len" value={{settings['max_len']}}>
+            </div>
+            <div>
+              number of vectors: 
+              <input type="text" name="nr_vectors" value={{settings['nr_vectors']}}>
+            </div>
+            <div>
+              min magnitude of vectors: 
+              <input type="text" name="magnitude" value={{settings['magnitude']}}>
+            </div>
+            <input type=submit>
+          </form>
+        </div>
+    </body>
+</html>

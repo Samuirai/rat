@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+    <head>
+        <title>RAT</title>
+        <style>
+
+@keyframes FrameFadeInOut {
+ 0% {
+   opacity:1;
+ }
+ 17% {
+   opacity:0;
+ }
+ 25% {
+   opacity:0;
+ }
+ 92% {
+   opacity:0;
+ }
+ 100% {
+   opacity:1;
+ }
+}
+
+.thumbnails:hover img {
+  -webkit-animation-name: FrameFadeInOut;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 3s;
+
+  -moz-animation-name: FrameFadeInOut;
+  -moz-animation-timing-function: ease-in-out;
+  -moz-animation-duration: 3s;
+
+  -o-animation-name: FrameFadeInOut;
+  -o-animation-timing-function: ease-in-out;
+  -o-animation-duration: 3s;
+
+  animation-name: FrameFadeInOut;
+  animation-timing-function: ease-in-out;
+  animation-duration: 3s;
+}
+.thumbnails img:nth-of-type(1) {
+  -webkit-animation-delay: 3s;
+  -moz-animation-delay: 3s;
+  -o-animation-delay: 3s;
+  animation-delay: 3s;
+}
+.thumbnails img:nth-of-type(2) {
+  -webkit-animation-delay: 2s;
+  -moz-animation-delay: 2s;
+  -o-animation-delay: 2s;
+  animation-delay: 2s;
+}
+.thumbnails img:nth-of-type(3) {
+  -webkit-animation-delay: 1s;
+  -moz-animation-delay: 1s;
+  -o-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+body {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.4;
+    font-family: Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+    border: 0;
+    margin: 0;
+}
+
+#header {
+    background-color: #DDDDDD;
+    height: 52px;
+}
+
+#header #logo {
+    float: left;
+}
+
+#header #logo img{
+    padding: 5px;
+    height: 40px;
+}
+
+#header #title {
+    padding: 5px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+#header #title .name {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+#header #title .menu a {
+    text-decoration: none;
+    color: #333;
+}
+
+#header #title .menu a:hover {
+    color: #999;
+}
+
+#content {
+    clear: both;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.video_cart {
+    background-color: #DDDDDD;
+    float: left;
+    border: 1px solid #aaa;
+    margin: 5px;
+}
+
+.video_cart .datetime {
+    padding: 5px;
+}
+
+.video_cart .thumbnails {
+    height: 300px;
+    width: 400px;
+}
+.video_cart .thumbnails img {
+  position: absolute;
+  height: 300px;
+}
+
+        </style>
+        <script>
+            yes_no(url) = function() {
+                prompt
+            }
+        </script>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <img src="/static/logo.png" alt="rat logo">
+            </div>
+            <div id="title">
+                <div class="name">RATs - Remote Access RAT</div>
+                <div class="menu">
+                    <a href="/">home</a> |
+                    <a href="/settings">settings</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="content">
+            {% for video in videos|sort %}
+                <div class="video_cart">
+                    <div class="thumbnails">
+                        {% for thumbnail in videos[video]['thumbnails'] %}
+                            <img src="/static/media/pics/{{thumbnail}}">
+                        {% endfor %}
+                    </div>
+                    <div class="datetime">
+                        {{ videos[video]['datetime'] }} |
+                        <a href="/static/media/videos/{{video}}">play</a> |
+                        <a href="/api/delete/{{video}}">delete</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>
