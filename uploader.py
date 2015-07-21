@@ -12,7 +12,6 @@ def log(msg):
 
 
 while True:
-    print listdir(FOLDER_VIDEO)
     for file_name in listdir(FOLDER_VIDEO):
         if file_name.split(".")[-1] == 'mp4':
             try:

@@ -32,12 +32,14 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
                 self.__motionsInLastClip = 0
                 print "start recording clip {0}".format(self.__filename)
                 self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "start recording clip {0}\n".format(self.__filename))
+        if self.__recording:
+            print self.__recording, time.time() - self.__lastMotion, time.time()-self.__recordingStarted
         if self.__recording and (time.time() - self.__lastMotion > 2.0 or time.time()-self.__recordingStarted>30):
             self.__camera.split_recording('/dev/null', splitter_port=1)
             self.__recording = False
             print "stop recording clip {0} motions: {1}".format(self.__filename, self.__motionsInLastClip)
             self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "stop recording clip {0}\n".format(self.__filename))
-            if self.__motionsInLastClip != 0:
+            if self.__motionsInLastClip > 3:
                 videoIDlist.append(self.__filename)
             else:
                 print "no motion during the clip! false positive?!"
@@ -48,7 +50,6 @@ with picamera.PiCamera() as camera:
         try:
             camera.logger = log
             camera.resolution = (1920, 1080)
-            camera.framerate = 24
             camera.exposure_mode = 'night'
             camera.start_recording('/dev/null', 
                                    format='h264',
@@ -57,12 +58,14 @@ with picamera.PiCamera() as camera:
                                    profile='high',
                                    inline_headers=True,
                                    bitrate=6000000,
+                                   framerate = 24,
                                    intra_period = 1,
                                    quality=17)
             camera.start_recording('/dev/null', 
                                    format='h264',
                                    motion_output=motionDetection,
                                    splitter_port=2, 
+                                   framerate = 5
                                    intra_period = 0,
                                    resize=(640, 480))
             print "running"
