@@ -11,13 +11,14 @@ def log(msg):
 
 
 while True:
+    print listdir(FOLDER_VIDEO)
     for file_name in listdir(FOLDER_VIDEO):
         if file_name.split(".")[-1] == 'mp4':
             try:
                 timestmap = float(file_name.split(".")[0])
                 if timestmap+5<time.time():
-                    print ""
                     video_file = path.join(FOLDER_VIDEO, file_name)
+                    print "try to upload {0}".format(video_file)
                     yt_id = upload_video(
                         path.abspath(video_file), 
                         str(datetime.fromtimestamp(timestamp)))
