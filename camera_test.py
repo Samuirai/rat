@@ -45,12 +45,15 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
                 print "no motion during the clip! false positive?!"
                 self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "no motion during the clip! false positive?!\n")
 
+print "startup"
 with picamera.PiCamera() as camera:
+    print "got camera"
     with DetectMotion(camera, (640, 480)) as motionDetection, open("/tmp/log.txt", 'a') as log:
         try:
             camera.logger = log
             camera.resolution = (1920, 1080)
             camera.exposure_mode = 'night'
+            print "start recording"
             camera.start_recording('/dev/null', 
                                    format='h264',
                                    splitter_port=1, 
@@ -65,7 +68,7 @@ with picamera.PiCamera() as camera:
                                    format='h264',
                                    motion_output=motionDetection,
                                    splitter_port=2, 
-                                   framerate = 5
+                                   framerate = 5,
                                    intra_period = 0,
                                    resize=(640, 480))
             print "running"
