@@ -53,6 +53,7 @@ with picamera.PiCamera() as camera:
             camera.logger = log
             camera.resolution = (1920, 1080)
             camera.exposure_mode = 'night'
+            camera.framerate = 12
             print "start recording"
             camera.start_recording('/dev/null', 
                                    format='h264',
@@ -60,15 +61,13 @@ with picamera.PiCamera() as camera:
                                    resize=None, 
                                    profile='high',
                                    inline_headers=True,
-                                   bitrate=6000000,
-                                   framerate = 24,
+                                   bitrate=17000000,
                                    intra_period = 1,
-                                   quality=17)
+                                   quality=20)
             camera.start_recording('/dev/null', 
                                    format='h264',
                                    motion_output=motionDetection,
-                                   splitter_port=2, 
-                                   framerate = 5,
+                                   splitter_port=2,
                                    intra_period = 0,
                                    resize=(640, 480))
             print "running"
