@@ -48,7 +48,7 @@ with picamera.PiCamera() as camera:
         try:
             camera.logger = log
             camera.resolution = (1920, 1080)
-            camera.framerate = 5
+            camera.framerate = 24
             camera.exposure_mode = 'night'
             camera.start_recording('/dev/null', 
                                    format='h264',
@@ -69,7 +69,7 @@ with picamera.PiCamera() as camera:
             log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "running\n")
             while True:
                 while len(videoIDlist):
-                    executionString = "ffmpeg -loglevel quiet -nostats -y -f h264 -r 5 -i /tmp/{0}.h264 -c:v copy -an -map 0:0 -f mp4 /tmp/{0}.mp4 && rm /tmp/{0}.h264".format(videoIDlist.pop(0))
+                    executionString = "ffmpeg -loglevel quiet -nostats -y -f h264 -r 24 -i /tmp/{0}.h264 -c:v copy -an -map 0:0 -f mp4 /tmp/{0}.mp4 && rm /tmp/{0}.h264".format(videoIDlist.pop(0))
                     print executionString
                     log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + executionString + "\n")
                     subprocess.Popen(executionString, shell=True)
