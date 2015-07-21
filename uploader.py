@@ -17,9 +17,15 @@ while True:
                 timestmap = float(file_name.split(".")[0])
                 if timestmap+5<time.time():
                     print ""
-                    upload_video(
-                        path.abspath(path.join(FOLDER_VIDEO, file_name)), 
+                    video_file = path.join(FOLDER_VIDEO, file_name)
+                    yt_id = upload_video(
+                        path.abspath(video_file), 
                         str(datetime.fromtimestamp(timestamp)))
+                    if yt_id:
+                        log("YT Uploaded: {0}".format(yt_id))
+                        remove(video_file)
+                    else:
+                        log("FAILED UPLOAD")
             except ValueError:
                 pass
     time.sleep(5)
