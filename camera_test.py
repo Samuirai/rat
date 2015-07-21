@@ -13,7 +13,7 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
         super(DetectMotion, self).__init__(camera, size)
         self.__camera = camera
         self.__lastMotion = time.time()
-        selg.__recordingStarted = time.time()
+        self.__recordingStarted = time.time()
         self.__motionsInLastClip = 0
         self.__recording = False
         self.__filename = "ERROR"

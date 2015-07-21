@@ -104,7 +104,7 @@ def initialize_upload(youtube, options):
         media_body=MediaFileUpload(options['file'], chunksize=-1, resumable=True)
     )
 
-    resumable_upload(insert_request)
+    return resumable_upload(insert_request)
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
@@ -156,7 +156,7 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
     }
     youtube = get_authenticated_service()
     try:
-        initialize_upload(youtube, options)
+        return initialize_upload(youtube, options)
     except HttpError, e:
         log("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
