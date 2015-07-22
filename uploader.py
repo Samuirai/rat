@@ -16,18 +16,22 @@ while True:
         if file_name.split(".")[-1] == 'mp4':
             try:
                 timestamp = float(file_name.split(".")[0])
+                video_file = path.join(FOLDER_VIDEO, file_name)
                 if timestamp+5<time.time():
-                    video_file = path.join(FOLDER_VIDEO, file_name)
-                    print "try to upload {0}".format(video_file)
-                    yt_id = youtube.upload_video(
-                        path.abspath(video_file), 
-                        str(datetime.fromtimestamp(timestamp)))
-                    print yt_id
-                    if yt_id:
-                        log("YT Uploaded: {0}".format(yt_id))
-                        remove(video_file)
+                    if path.getsize(video_file)>512:
+                        print "try to upload {0} size: {1)".format(video_file, path.getsize(video_file))
+                        yt_id = youtube.upload_video(
+                            path.abspath(video_file),
+                            str(datetime.fromtimestamp(timestamp)))
+                        print yt_id
+                        if yt_id:
+                            log("YT Uploaded: {0}".format(yt_id))
+                            remove(video_file)
+                        else:
+                            log("FAILED UPLOAD")
                     else:
-                        log("FAILED UPLOAD")
+                        remove(video_file)
             except ValueError:
                 pass
+            time.sleep(5)
     time.sleep(5)

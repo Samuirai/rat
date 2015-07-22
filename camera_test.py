@@ -32,17 +32,21 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
                 self.__motionsInLastClip = 0
                 print "start recording clip {0}".format(self.__filename)
                 #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "start recording clip {0}\n".format(self.__filename))
-        _t = time.time()
-        if self.__recording and (_t - self.__lastMotion > 2.0 or _t - self.__recordingStarted>30):
-            self.__camera.split_recording('/dev/null', splitter_port=1)
-            self.__recording = False
-            print "stop recording clip {0} motions: {1}".format(self.__filename, self.__motionsInLastClip)
-            #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "stop recording clip {0}\n".format(self.__filename))
-            if self.__motionsInLastClip > 12:
-                videoIDlist.append(self.__filename)
-            else:
-                print "no motion during the clip! false positive?!"
-                #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "no motion during the clip! false positive?!\n")
+        
+        if self.__recording
+            _t = time.time()
+            if (_t - self.__lastMotion > 2.0 or _t - self.__recordingStarted>30):
+                self.__camera.split_recording('/dev/null', splitter_port=1)
+                self.__recording = False
+                print "stop recording clip {0} motions: {1}".format(self.__filename, self.__motionsInLastClip)
+                #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "stop recording clip {0}\n".format(self.__filename))
+                if self.__motionsInLastClip > 5:
+                    videoIDlist.append(self.__filename)
+                else:
+                    executionString = "rm /tmp/{0}.h264".format(self.__filename)
+                    subprocess.Popen(executionString, shell=True)
+                    print "no motion during the clip! false positive?!"
+                    #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "no motion during the clip! false positive?!\n")
 
 print "startup"
 with picamera.PiCamera() as camera:
@@ -52,9 +56,9 @@ with picamera.PiCamera() as camera:
             camera.logger = log
             camera.resolution = (1920, 1080)
             camera.exposure_mode = 'night'
-            camera.framerate = 12
+            camera.framerate = 5
             print "start recording"
-            camera.start_recording('/dev/null', 
+            camera.start_recording('/dev/null',
                                    format='h264',
                                    splitter_port=1, 
                                    resize=None, 
@@ -73,12 +77,12 @@ with picamera.PiCamera() as camera:
             log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "running\n")
             while True:
                 while len(videoIDlist):
-                    executionString = "ffmpeg -loglevel quiet -nostats -y -f h264 -r 12 -i /tmp/{0}.h264 -c:v copy -an -map 0:0 -f mp4 /tmp/{0}.mp4 && rm /tmp/{0}.h264".format(videoIDlist.pop(0))
+                    executionString = "ffmpeg -loglevel quiet -nostats -y -f h264 -r 5 -i /tmp/{0}.h264 -c:v copy -an -map 0:0 -f mp4 /tmp/{0}.mp4 && rm /tmp/{0}.h264".format(videoIDlist.pop(0))
                     print executionString
                     log.write(time.strftime("%Y-%m-%d %H:%M:%S ") + executionString + "\n")
                     subprocess.Popen(executionString, shell=True)
                 
-                time.sleep(1)
+                time.sleep(5)
             
         except KeyboardInterrupt:
             print "stopping"
