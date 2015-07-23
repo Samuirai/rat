@@ -11,6 +11,7 @@ textarea {
 
 {% block content %}
 
-<textarea>{{logs}}</textarea>
+<textarea>{% for log in logs %}{{log}}
+{% endfor %}</textarea>
 
 {% endblock %}

@@ -33,7 +33,7 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
                 print "start recording clip {0}".format(self.__filename)
                 #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "start recording clip {0}\n".format(self.__filename))
         
-        if self.__recording
+        if self.__recording:
             _t = time.time()
             if (_t - self.__lastMotion > 2.0 or _t - self.__recordingStarted>30):
                 self.__camera.split_recording('/dev/null', splitter_port=1)

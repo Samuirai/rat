@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import httplib
 import httplib2
@@ -14,6 +14,7 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 
+import rat
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -156,10 +157,14 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
     }
     youtube = get_authenticated_service()
     try:
-        return initialize_upload(youtube, options)
+        yt_id = initialize_upload(youtube, options)
+        rat.post_message(rat.YT_NEW, yt_id)
+        return yt_id
     except HttpError, e:
         log("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 if __name__ == '__main__':
-    
-    upload_video(sys.argv[1], 'test upload', )
+    if len(sys.argv)>=2:
+        upload_video(sys.argv[1],sys.argv[2])
+    else:
+        get_authenticated_service()

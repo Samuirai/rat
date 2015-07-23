@@ -10,16 +10,16 @@ def log(msg):
     print msg
     LOG_FILE.write(msg+"\n")
 
-
 while True:
     for file_name in listdir(FOLDER_VIDEO):
         if file_name.split(".")[-1] == 'mp4':
             try:
                 timestamp = float(file_name.split(".")[0])
                 video_file = path.join(FOLDER_VIDEO, file_name)
+                print "wait a bit more fore {0} size: {1}".format(video_file, path.getsize(video_file))
                 if timestamp+5<time.time():
                     if path.getsize(video_file)>512:
-                        print "try to upload {0} size: {1)".format(video_file, path.getsize(video_file))
+                        print "try to upload {0} size: {1}".format(video_file, path.getsize(video_file))
                         yt_id = youtube.upload_video(
                             path.abspath(video_file),
                             str(datetime.fromtimestamp(timestamp)))

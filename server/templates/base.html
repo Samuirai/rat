@@ -129,6 +129,8 @@ body {
 </style>
 
 
+
+
 {% block css %}
     
 {% endblock %}
@@ -136,9 +138,28 @@ body {
 
         </style>
         <script>
-            yes_no(url) = function() {
+            yes_no = function(url) {
                 prompt
             }
+
+            function get(URL){
+              var HTTP = new XMLHttpRequest();
+              HTTP.open("GET", URL, false);
+              HTTP.send(null);
+              return JSON.parse(HTTP.responseText);          
+            }
+
+            function post(URL, data) {
+              var HTTP = new XMLHttpRequest();
+              HTTP.open("POST", URL, false);
+              HTTP.setRequestHeader("Content-Type", "application/json")
+              HTTP.send(data);
+              HTTP.onload = function() {
+                console.log(this.response)
+              }
+              //return JSON.parse(HTTP.responseText); 
+            }
+
         </script>
     </head>
     <body>

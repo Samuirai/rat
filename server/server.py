@@ -3,11 +3,12 @@ import json
 from datetime import datetime
 from os import path, makedirs, listdir, remove
 from functools import wraps
+from lockfile import locked
 
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid."""
-    return username == 'sami' and password == 'w3l0ver4ts'
+    return username == 'test' and password == 'test'
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
@@ -33,17 +34,34 @@ LOG_ERROR = "!"
 FOLDER_MEDIA = path.abspath(path.join("static", "media"))
 FOLDER_VIDEO = path.abspath(path.join(FOLDER_MEDIA, "videos"))
 FOLDER_PIC = path.abspath(path.join(FOLDER_MEDIA, "pics"))
-FILE_SETTINGS = path.abspath("settings")
+
 FD_SETTINGS = None
 SETTINGS = {}
+
+FILE_MESSAGE = path.abspath("messages")
+LOCK_MESSAGE = path.join("/tmp", "lock_message")
+
+FILE_SETTINGS = path.abspath("settings")
+LOCK_SETTINGS = path.join("/tmp", "lock_settings")
+
+FILE_YT_AUTH_URL = path.abspath("yt_auth_url")
+LOCK_YT_AUTH_URL = path.join("/tmp", "lock_yt_auth_url")
+
+LOCK_YT_AUTH_CODE = path.join("/tmp", "lock_yt_auth_code")
+FILE_YT_AUTH_CODE = path.abspath("yt_auth_code")
+
+LOCK_LOG = path.join("/tmp", "lock_log")
+FILE_LOG = path.abspath("log")
+
 
 ######### HELPER #########
 
 def log(severity, msg):
-    print "[{0}] {1}".format(severity, msg)
+    _log = "[{0}] {1}".format(severity, msg)
+    print _log
+    write_log(_log)
 
 def get_thumbnails(video_name, pic_files=listdir(FOLDER_PIC)):
-    
     thumbnails = ['na.png']*4
     for pic_filename in pic_files:
         if pic_filename.startswith(video_name):
@@ -69,16 +87,18 @@ def get_all_videos():
                 }
     return videos
 
+@locked(LOCK_SETTINGS)
 def load_settings():
-    FD_SETTINGS = open(FILE_SETTINGS, "r")
-    SETTINGS = json.loads(FD_SETTINGS.read())
-    FD_SETTINGS.close()
+    _FD = open(FILE_SETTINGS, "r")
+    SETTINGS = json.loads(_FD.read())
+    _FD.close()
     return SETTINGS
 
+@locked(LOCK_SETTINGS)
 def dump_settings(SETTINGS=SETTINGS):
-    FD_SETTINGS = open(FILE_SETTINGS, "w")
-    FD_SETTINGS.write(json.dumps(SETTINGS))
-    FD_SETTINGS.close()
+    _FD = open(FILE_SETTINGS, "w")
+    _FD.write(json.dumps(SETTINGS))
+    _FD.close()
     return SETTINGS
 
 def save_settings(form):
@@ -88,6 +108,69 @@ def save_settings(form):
         dump_settings(SETTINGS)
     SETTINGS = load_settings()
     return SETTINGS
+
+
+@locked(LOCK_YT_AUTH_URL)
+def write_yt_auth_url(_JSON):
+    _FD = open(FILE_YT_AUTH_URL, "w")
+    _FD.write(_JSON['url'])
+    _FD.close()
+
+@locked(LOCK_YT_AUTH_URL)
+def clear_yt_auth_url():
+    _FD = open(FILE_YT_AUTH_URL, "w")
+    _FD.write("")
+    _FD.close()
+
+@locked(LOCK_YT_AUTH_URL)
+def get_yt_auth_url():
+    _FD = open(FILE_YT_AUTH_URL, "r")
+    auth_url = _FD.read()
+    _FD.close()
+    return auth_url
+
+
+
+@locked(LOCK_YT_AUTH_CODE)
+def write_yt_auth_code(_JSON):
+    _FD = open(FILE_YT_AUTH_CODE, "w")
+    _FD.write(_JSON['code'])
+    _FD.close()
+
+@locked(LOCK_YT_AUTH_CODE)
+def clear_yt_auth_code():
+    _FD = open(FILE_YT_AUTH_CODE, "w")
+    _FD.write("")
+    _FD.close()
+
+@locked(LOCK_YT_AUTH_CODE)
+def get_yt_auth_code():
+    _FD = open(FILE_YT_AUTH_CODE, "r")
+    auth_url = _FD.read()
+    _FD.close()
+    return auth_url
+
+
+@locked(LOCK_LOG)
+def get_log():
+    _FD = open(FILE_LOG, "r")
+    logs = _FD.read().split("\n")
+    _FD.close()
+    return logs
+
+@locked(LOCK_LOG)
+def write_log(_MSG):
+    _FD = open(FILE_LOG, "a")
+    _FD.write(_MSG+"\n")
+    _FD.close()
+
+
+def convert_json(s):
+    try:
+        return json.loads(s)
+    except ValueError:
+        return {}
+
 
 ######### NORMAL #########
 
@@ -99,7 +182,7 @@ def index():
 @app.route("/log")
 @requires_auth
 def log_get():
-    logs = "example\nasdlol"
+    logs = get_log()
     return render_template('log.html', logs=logs)
 
 @app.route("/settings", methods=['GET', 'POST'])
@@ -108,7 +191,9 @@ def setings():
     if request.method == 'POST':
         save_settings(request.form)
     SETTINGS = load_settings()
-    return render_template('settings.html', settings=SETTINGS)
+    YT_AUTH_URL = get_yt_auth_url()
+    YT_AUTH_CODE = get_yt_auth_code()
+    return render_template('settings.html', settings=SETTINGS, yt_auth_url=YT_AUTH_URL, yt_auth_code=YT_AUTH_CODE)
 
 # ffmpeg -loglevel quiet -nostats -y -f h264 -r 5 -i /tmp/reh{0}.h264 -c:v copy -an -map 0:0 -f mp4 /home/stephan/reh/media/reh{0}.mp4 && rm /tmp/reh{0}.h264
 # ffmpeg -i input.flv -vf fps=1 out%d.png
@@ -129,6 +214,61 @@ def api_delete_video(video):
     if video:
         remove(path.join(FOLDER_VIDEO, video))
     return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
+
+
+@app.route("/api/yt_auth_url", methods=['POST'])
+@requires_auth
+def api_post_yt_auth_url():
+    write_yt_auth_url(request.get_json(force=True))
+    return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_url", methods=['GET'])
+@requires_auth
+def api_get_yt_auth_url():
+    _JSON = json.dumps({'status': 'OK', 'url': get_yt_auth_url()})
+    return Response(_JSON, 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_url/clear", methods=['GET'])
+@requires_auth
+def api_clear_yt_auth_url():
+    clear_yt_auth_url()
+    _JSON = json.dumps({'status': 'OK'})
+    return Response(_JSON, 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_code", methods=['POST'])
+@requires_auth
+def api_post_yt_auth_code():
+    write_yt_auth_code(request.get_json(force=True))
+    return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_code", methods=['GET'])
+@requires_auth
+def api_get_yt_auth_code():
+    _JSON = json.dumps({'status': 'OK', 'code': get_yt_auth_code()})
+    return Response(_JSON, 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_code/clear", methods=['GET'])
+@requires_auth
+def api_clear_yt_auth_code():
+    clear_yt_auth_code()
+    _JSON = json.dumps({'status': 'OK'})
+    return Response(_JSON, 200, mimetype="application/json") 
+
+
+@app.route("/api/log", methods=['POST'])
+@requires_auth
+def api_post_log():
+    _JSON = request.get_json(force=True)
+    write_log(_JSON['log'])
+    return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
+
+@app.route("/api/yt_auth_code", methods=['GET'])
+@requires_auth
+def api_get_log():
+    _JSON = json.dumps({'status': 'OK', 'logs': get_log()})
+    return Response(_JSON, 200, mimetype="application/json") 
+
+
 
 @app.route("/api/settings")
 @app.route("/api/ping")
@@ -153,6 +293,18 @@ def check_setup():
         log(LOG_DEBUG, "make config file: {0}".format(FILE_SETTINGS))
         FD_SETTINGS = open(FILE_SETTINGS, "w")
         FD_SETTINGS.close()
+    if not path.exists(FILE_MESSAGE):
+        log(LOG_DEBUG, "make messages file: {0}".format(FILE_MESSAGE))
+        _FD = open(FILE_MESSAGE, "w")
+        _FD.close()
+    if not path.exists(FILE_YT_AUTH_CODE):
+        log(LOG_DEBUG, "make FILE_YT_AUTH_CODE file: {0}".format(FILE_YT_AUTH_CODE))
+        _FD = open(FILE_YT_AUTH_CODE, "w")
+        _FD.close()
+    if not path.exists(FILE_YT_AUTH_URL):
+        log(LOG_DEBUG, "make FILE_YT_AUTH_URL file: {0}".format(FILE_YT_AUTH_URL))
+        _FD = open(FILE_YT_AUTH_URL, "w")
+        _FD.close()
 
     load_settings()
     log(LOG_INFO, "settings loaded: {0}".format(SETTINGS))

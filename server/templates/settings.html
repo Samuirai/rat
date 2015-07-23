@@ -47,6 +47,11 @@ input[type=submit], input[type=button] {
 {% endblock %}
 
 {% block content %}
+<div>
+YT Auth URL: <input type="text" value="{{yt_auth_url}}"><br>
+YT Auth Code: <input id="yt_auth_code" type="text" value="{{yt_auth_code}}">
+  <input type="submit" onclick="post('/api/yt_auth_code', JSON.stringify({'code': document.getElementById('yt_auth_code').value}))">
+</div>
 <div id="settings">
   <form action="" method="post">
     <div class="form_line">
