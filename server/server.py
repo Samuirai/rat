@@ -62,7 +62,9 @@ def log(severity, msg):
     print _log
     write_log(_log)
 
-def get_thumbnails(video_name, pic_files=listdir(FOLDER_PIC)):
+def get_thumbnails(video_name, pic_files=None):
+    if not pic_files:
+        pic_files=listdir(FOLDER_PIC)
     thumbnails = ['na.png']*4
     for pic_filename in pic_files:
         if pic_filename.startswith(video_name):
@@ -315,6 +317,6 @@ def check_setup():
 if __name__ == "__main__":
     if check_setup():
         app.debug = True
-        app.run(port=config.SERVER_PORT)
+        app.run(host=config.SERVER_IP, port=config.SERVER_PORT)
     else:
         exit()
