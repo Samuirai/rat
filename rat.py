@@ -4,7 +4,7 @@ from server import config
 
 __URL = "http://88.198.162.251"
 __URL = config.SERVER_URL
-__SETTINGS = "/api/setings"
+__SETTINGS = "/api/settings"
 __MESSAGE = "/api/messages"
 __YT_AUTH_URL = "/api/yt_auth_url"
 __YT_AUTH_CODE = "/api/yt_auth_code"

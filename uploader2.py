@@ -58,7 +58,7 @@ while True:
                     if path.getsize(video_file)>512:
                         log("try to upload {0} size: {1}".format(video_file, path.getsize(video_file)))
 
-                        upload_process = Popen("python youtube.py \"{0}\" \"{1}\"".format(
+                        upload_process = subprocess.Popen("python youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))))
                         log(upload_process.communicate())
