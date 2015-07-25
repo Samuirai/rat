@@ -5,8 +5,25 @@ import picamera
 import picamera.array
 import time
 import subprocess
+import rat
 
 videoIDlist = []
+
+# {"min_len": "2", "max_len": "30", "nr_vectors": "7", "video_height": "1080", "magnitude": "21", "video_width": "1920"}
+
+settings = rat.get_settings()
+for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps']:
+    if atr not in settings:
+        exit("{0} is missing in settings".format(atr))
+
+__MIN_LEN = settings['min_len']
+__MAX_LEN = settings['max_len']
+__NR_VECTORS = settings['nr_vectors']
+__MAGNITUDE = settings['magnitude']
+__VIDEO_HEIGHT = settings['video_height']
+__VIDEO_WIDTH = settings['video_width']
+__MOTIONS = settings['motions']
+__FPS = settings['fps']
 
 class DetectMotion(picamera.array.PiMotionAnalysis):
     def __init__(self, camera, size = None):
@@ -20,7 +37,7 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
         
     def analyse(self, a):
         a = np.sqrt(np.square(a['x'].astype(np.float)) + np.square(a['y'].astype(np.float))).clip(0, 255).astype(np.uint8) # compute vector from both directions
-        if (a > 21).sum() > 15:  # If there're more than 7 vectors with a magnitude greater than 21, then say we've detected motion
+        if (a > __MAGNITUDE).sum() > __NR_VECTORS:  # If there're more than 7 vectors with a magnitude greater than 21, then say we've detected motion
             #print "motion detected! {0} motions: {1}".format((a > 21).sum(), self.__motionsInLastClip)
             self.__lastMotion = time.time()
             self.__motionsInLastClip += 1
@@ -35,12 +52,12 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
         
         if self.__recording:
             _t = time.time()
-            if (_t - self.__lastMotion > 2.0 or _t - self.__recordingStarted>30):
+            if (_t - self.__lastMotion > __MIN_LEN or _t - self.__recordingStarted>__MAX_LEN):
                 self.__camera.split_recording('/dev/null', splitter_port=1)
                 self.__recording = False
                 print "stop recording clip {0} motions: {1}".format(self.__filename, self.__motionsInLastClip)
                 #self.__camera.logger.write(time.strftime("%Y-%m-%d %H:%M:%S ") + "stop recording clip {0}\n".format(self.__filename))
-                if self.__motionsInLastClip > 5:
+                if self.__motionsInLastClip > __MOTIONS:
                     videoIDlist.append(self.__filename)
                 else:
                     executionString = "rm /tmp/{0}.h264".format(self.__filename)
@@ -54,9 +71,9 @@ with picamera.PiCamera() as camera:
     with DetectMotion(camera, (640, 480)) as motionDetection, open("/tmp/log.txt", 'a') as log:
         try:
             camera.logger = log
-            camera.resolution = (1920, 1080)
+            camera.resolution = (__VIDEO_HEIGHT, __VIDEO_WIDTH)
             camera.exposure_mode = 'night'
-            camera.framerate = 5
+            camera.framerate = __FPS
             print "start recording"
             camera.start_recording('/dev/null',
                                    format='h264',

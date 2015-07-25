@@ -1,15 +1,16 @@
 import requests
 import json
+from server import config
 
 __URL = "http://88.198.162.251"
-__URL = "http://127.0.0.1:5000"
+__URL = config.SERVER_URL
 __SETTINGS = "/api/setings"
 __MESSAGE = "/api/messages"
 __YT_AUTH_URL = "/api/yt_auth_url"
 __YT_AUTH_CODE = "/api/yt_auth_code"
 __LOG = "/api/log"
 __CLEAR = "/clear"
-__AUTH = ('test', 'test')
+__AUTH = config.HTTP_AUTH
 YT_AUTH = '/YT_AUTH'
 
 def get_settings():

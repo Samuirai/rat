@@ -4,11 +4,12 @@ from datetime import datetime
 from os import path, makedirs, listdir, remove
 from functools import wraps
 from lockfile import locked
+import config
 
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid."""
-    return username == 'test' and password == 'test'
+    return username == config.HTTP_AUTH[0] and password == config.HTTP_AUTH[1]
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
@@ -314,6 +315,6 @@ def check_setup():
 if __name__ == "__main__":
     if check_setup():
         app.debug = True
-        app.run()
+        app.run(port=config.SERVER_PORT)
     else:
         exit()

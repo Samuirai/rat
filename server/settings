@@ -1,1 +1,1 @@
-{"video_height": "1080", "nr_vectors": "7", "max_len": "30", "min_len": "2", "magnitude": "21", "video_width": "1920"}
+{"motions": "10", "video_height": "1080", "nr_vectors": "15", "max_len": "30", "min_len": "2", "magnitude": "21", "fps": "5", "video_width": "1920"}
