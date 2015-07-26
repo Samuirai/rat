@@ -158,7 +158,9 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
     youtube = get_authenticated_service()
     try:
         yt_id = initialize_upload(youtube, options)
-        rat.post_message(rat.YT_NEW, yt_id)
+        rat.post_log("Youtube Video Uploaded: https://www.youtube.com/watch?v={0}".format(yt_id))
+        if yt_id:
+            os.remove(file_name)
         return yt_id
     except HttpError, e:
         log("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

@@ -17,8 +17,6 @@ for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'vi
     if atr not in settings:
         exit("{0} is missing in settings".format(atr))
 
-__VIDEO_HEIGHT = int(settings['video_height'])
-__VIDEO_WIDTH = int(settings['video_width'])
 __FPS = int(settings['fps'])
 
 print "__MIN_LEN: {0}".format(__MIN_LEN)
@@ -51,7 +49,7 @@ class DetectMotion(picamera.array.PiMotionAnalysis):
             #print "motion detected! {0} motions: {1}".format((a > 21).sum(), self.__motionsInLastClip)
             self.__lastMotion = time.time()
             self.__motionsInLastClip += 1
-            if not self.__recording:
+            if not self.__recording and self.__motionsInLastClip>2:
                 self.__filename = str(int(time.time()))
                 self.__camera.split_recording("/tmp/{0}.h264".format(self.__filename), splitter_port=1)
                 self.__recording = True

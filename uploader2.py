@@ -60,17 +60,11 @@ while True:
 
                         upload_process = subprocess.Popen("python youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
-                            str(datetime.fromtimestamp(timestamp))))
-                        log(upload_process.communicate())
+                            str(datetime.fromtimestamp(timestamp))), shell=True)
+                        rat.post_log(str(upload_process.communicate()))
                         #yt_id = youtube.upload_video(
                         #    path.abspath(video_file),
                         #    str(datetime.fromtimestamp(timestamp)))
-                        log(yt_id)
-                        if yt_id:
-                            log("YT Uploaded: {0}".format(yt_id))
-                            remove(video_file)
-                        else:
-                            log("FAILED UPLOAD")
                     else:
                         remove(video_file)
             except ValueError:
