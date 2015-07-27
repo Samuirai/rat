@@ -1,6 +1,7 @@
 import requests
 import json
 from server import config
+import sys
 
 __URL = "http://88.198.162.251"
 __URL = config.SERVER_URL
@@ -38,7 +39,7 @@ def clear_yt_auth_code():
 
 
 def post_log(log):
-    return requests.post(__URL+__LOG, data=json.dumps({'log': log}), auth=__AUTH)
+    return requests.post(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0]}), auth=__AUTH)
 
 def get_log():
     return requests.get(__URL+__LOG, auth=__AUTH).json()['logs']

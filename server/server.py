@@ -157,7 +157,13 @@ def get_yt_auth_code():
 @locked(LOCK_LOG)
 def get_log():
     _FD = open(FILE_LOG, "r")
-    logs = _FD.read().split("\n")
+    logs = []
+    for j in _FD.read().split("\n"):
+        if j:
+            try:
+                logs.append(json.loads(j))
+            except ValueError:
+                logs.append(j)
     _FD.close()
     return logs
 
@@ -262,7 +268,7 @@ def api_clear_yt_auth_code():
 @requires_auth
 def api_post_log():
     _JSON = request.get_json(force=True)
-    write_log(_JSON['log'])
+    write_log(json.dumps(_JSON))
     return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
 
 @app.route("/api/yt_auth_code", methods=['GET'])

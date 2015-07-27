@@ -18,7 +18,7 @@ input[type=text].small {
 }
 
 #settings .form_desc {
-  width: 200px;
+  width: 500px;
   float: left;
   text-align: right;
   padding: 5px;
@@ -54,12 +54,7 @@ YT Auth Code: <input id="yt_auth_code" type="text" value="{{yt_auth_code}}">
 </div>
 <div id="settings">
   <form action="" method="post">
-    <div class="form_line">
-      <div class="form_desc">
-        minimum video length: 
-      </div>
-      <input class="small" type="text" name="min_len" value={{settings['min_len']}}>
-    </div>
+    
     <div class="form_line">
       <div class="form_desc">
         maximum video length: 
@@ -68,7 +63,7 @@ YT Auth Code: <input id="yt_auth_code" type="text" value="{{yt_auth_code}}">
     </div>
     <div class="form_line">
       <div class="form_desc">
-        number of vectors: 
+        how many vectors have to be over certain magnitude: 
       </div>
       <input class="small" type="text" name="nr_vectors" value={{settings['nr_vectors']}}>
     </div>
@@ -80,15 +75,39 @@ YT Auth Code: <input id="yt_auth_code" type="text" value="{{yt_auth_code}}">
     </div>
     <div class="form_line">
       <div class="form_desc">
-        min detected motion: 
+        how many detections to count as a recording: 
       </div>
       <input class="small" type="text" name="motions" value={{settings['motions']}}>
+    </div>
+    <div class="form_line">
+      <div class="form_desc">
+        in what timeframe should those motions occur: 
+      </div>
+      <input class="small" type="text" name="min_len" value={{settings['min_len']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
         fps: 
       </div>
       <input class="small" type="text" name="fps" value={{settings['fps']}}>
+    </div>
+    <div class="form_line">
+      <div class="form_desc">
+        IR LED %: 
+      </div>
+      <input class="small" type="text" name="ir_led" value={{settings['ir_led']}}>
+    </div>
+    <div class="form_line">
+      <div class="form_desc">
+        seconds before motion: 
+      </div>
+      <input class="small" type="text" name="pre_motion" value={{settings['pre_motion']}}>
+    </div>
+    <div class="form_line">
+      <div class="form_desc">
+        seconds after motion: 
+      </div>
+      <input class="small" type="text" name="post_motion" value={{settings['post_motion']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
