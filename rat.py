@@ -2,6 +2,7 @@ import requests
 import json
 from server import config
 import sys
+import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(23, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
