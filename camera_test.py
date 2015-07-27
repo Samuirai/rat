@@ -99,6 +99,7 @@ class ProcessingThread(threading.Thread):
                         self.timestamp = str(int(self.startedRecording))
                         # start recording to file, by switching from writing to stream to write to file
                         self.recording = True
+                        rat.set_red_led(True)
                         self.camera.split_recording("/tmp/part1_{0}.h264".format(self.timestamp), splitter_port=1)
                         # and save the last 2 seconds from the stream
                         self.log("start recording and write part0")
@@ -113,6 +114,7 @@ class ProcessingThread(threading.Thread):
                 if (now-self.lastMotion) > self.POST_MOTION or (now-self.startedRecording) > self.MAX_LEN:
                     self.log("stop recording with {0}s since last motion, and length: {1}s".format((now-self.lastMotion), (now-self.startedRecording)))
                     self.recording = False
+                    rat.set_red_led(False)
                     self.camera.split_recording(self.stream, splitter_port=1)
                     RECORDED_VIDEOS_FIFO.put(
                             ("part0_{0}.h264".format(self.timestamp), 
@@ -191,6 +193,8 @@ with picamera.PiCamera() as camera:
         camera.stop_preview()
         camera.stop_recording(splitter_port=2)
         camera.stop_recording(splitter_port=1)
+        rat.set_red_led(False)
+        rat.set_green_led(False)
         exit(0)
         #time.sleep(1)
         #exit(0)

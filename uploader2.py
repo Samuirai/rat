@@ -52,10 +52,14 @@ while True:
                 video_file = path.join(FOLDER_VIDEO, file_name)
                 if timestamp+5<time.time():
                     if path.getsize(video_file)>512:
+                        rat.set_green_led(True)
                         log("attempt to upload {0} with size: {1} MB".format(video_file, path.getsize(video_file)/1024.0))
                         upload_process = subprocess.Popen("python youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)
+                        upload_process.communicate()
+                        rat.set_green_led(False)
+
                     else:
                         remove(video_file)
             except ValueError:

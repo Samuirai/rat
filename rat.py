@@ -3,6 +3,10 @@ import json
 from server import config
 import sys
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(23, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(22, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
+
 __URL = "http://88.198.162.251"
 __URL = config.SERVER_URL
 __SETTINGS = "/api/settings"
@@ -13,6 +17,12 @@ __LOG = "/api/log"
 __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 YT_AUTH = '/YT_AUTH'
+
+def set_red_led(state):
+    GPIO.output(23,state)
+
+def set_green_led(state):
+    GPIO.output(22,state)
 
 def get_settings():
     return requests.get(__URL+__SETTINGS, auth=__AUTH).json()
