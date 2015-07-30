@@ -15,21 +15,23 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 MOTIONS_FIFO = Queue.Queue()
 RECORDED_VIDEOS_FIFO = Queue.Queue()
 
 settings = rat.get_settings()
-for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps']:
+for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps', 'rotation']:
     if atr not in settings:
         exit("{0} is missing in settings".format(atr))
-print settings
+
 FPS = int(settings['fps'])
 VIDEO_WIDTH = int(settings['video_width'])
 VIDEO_HEIGHT = int(settings['video_height'])
 MAGNITUDE = int(settings['magnitude'])
 PRE_MOTION = int(settings['pre_motion'])
 POST_MOTION = int(settings['post_motion'])
+ROTATION = int(settings['rotation'])
 
 def log(msg):
     sys.stdout.write(msg+"\n")
@@ -85,7 +87,7 @@ class ProcessingThread(threading.Thread):
                 pass
             if nr_of_vectors:
                 # if enough vectors were over the thershold | and if button is active
-                if nr_of_vectors > self.NR_VECTORS and GPIO.input(24)==1:
+                if nr_of_vectors > self.NR_VECTORS and GPIO.input(24)==0:
                     # save the time of the last motion
                     self.lastMotion = time.time()
                     # increasse the motion counter
@@ -151,6 +153,7 @@ with picamera.PiCamera() as camera:
         camera.resolution = (VIDEO_WIDTH, VIDEO_HEIGHT)
         camera.exposure_mode = 'night'
         camera.framerate = FPS
+        camera.rotation = ROTATION
         camera.start_preview()
         camera.start_recording(stream,
                                format='h264',
@@ -169,19 +172,39 @@ with picamera.PiCamera() as camera:
                                resize=(640, 480))
         pt.start()
         while True:
-            (part1, part2, done) = (None, None, None)
             try:
-                (part1, part2, done) = RECORDED_VIDEOS_FIFO.get(True)
+                (part1, part2, done) = RECORDED_VIDEOS_FIFO.get(False)
+                if part1 and part2 and done:
+                    #executionString = "avconv -loglevel quiet -y -r {0} -i /tmp/{1}.h264 -vcodec copy -r 30 /tmp/{1}.mp4 && rm /tmp/{1}.h264".format(__FPS, videoIDlist.pop(0))
+                    executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2} && rm /tmp/{0} /tmp/{1} && mv /tmp/_{2} /tmp/{2}".format(part1, part2, done, FPS)
+                    #executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2}".format(part1, part2, done, FPS)
+                    log(executionString)
+                    subprocess.Popen(executionString, shell=True)
             except Queue.Empty:
                 pass
-            if part1 and part2 and done:
-                #executionString = "avconv -loglevel quiet -y -r {0} -i /tmp/{1}.h264 -vcodec copy -r 30 /tmp/{1}.mp4 && rm /tmp/{1}.h264".format(__FPS, videoIDlist.pop(0))
-                executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2} && rm /tmp/{0} /tmp/{1} && mv /tmp/_{2} /tmp/{2}".format(part1, part2, done, FPS)
-                #executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2}".format(part1, part2, done, FPS)
-                log(executionString)
-                subprocess.Popen(executionString, shell=True)
+            
+            if GPIO.input(17)==0 or int(time.time())%120==0:
+                rat.set_green_led(True)
+                rat.set_red_led(True)
+                settings = rat.get_settings()
+                FPS = int(settings['fps'])
+                VIDEO_WIDTH = int(settings['video_width'])
+                VIDEO_HEIGHT = int(settings['video_height'])
+                MAGNITUDE = int(settings['magnitude'])
+                PRE_MOTION = int(settings['pre_motion'])
+                POST_MOTION = int(settings['post_motion'])
+                ROTATION = int(settings['rotation'])
+                camera.rotation = ROTATION
+                camera.capture('/tmp/photo.jpg', 
+                    use_video_port=True, 
+                    splitter_port=0,
+                    resize=(320, 180))
+                rat.upload_photo()
+                time.sleep(0.1)
+                rat.set_green_led(False)
+                rat.set_red_led(False)
 
-            time.sleep(5)
+            time.sleep(0.2)
 
     except KeyboardInterrupt:
         log("CTR+C Keyboard Interrupt")

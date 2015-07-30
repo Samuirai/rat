@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, redirect, url_for
+from werkzeug import secure_filename
 import json
 from datetime import datetime
 from os import path, makedirs, listdir, remove
@@ -62,33 +63,6 @@ def log(severity, msg):
     print _log
     write_log(_log)
 
-def get_thumbnails(video_name, pic_files=None):
-    if not pic_files:
-        pic_files=listdir(FOLDER_PIC)
-    thumbnails = ['na.png']*4
-    for pic_filename in pic_files:
-        if pic_filename.startswith(video_name):
-            thumbnails.append(pic_filename)
-    return thumbnails[-4:]
-
-def get_all_videos():
-    videos = {}
-    video_files = listdir(FOLDER_VIDEO)
-    pic_files = listdir(FOLDER_PIC)
-    for video_filename in video_files:
-        video_name, extension = video_filename.split(".")
-        if extension == 'mp4':
-            log(LOG_DEBUG, "found video: {0}".format(video_filename))
-            timestamp = 0
-            try:
-                timestamp = float(video_name)
-            except ValueError:
-                timestamp = 0
-            videos[video_filename] = {
-                'thumbnails': get_thumbnails(video_name, pic_files),
-                'datetime': datetime.fromtimestamp(timestamp),
-                }
-    return videos
 
 @locked(LOCK_SETTINGS)
 def load_settings():
@@ -163,7 +137,8 @@ def get_log():
             try:
                 logs.append(json.loads(j))
             except ValueError:
-                logs.append(j)
+                pass
+                #logs.append(j)
     _FD.close()
     return logs
 
@@ -186,13 +161,18 @@ def convert_json(s):
 @app.route("/")
 @requires_auth
 def index():
-    return render_template('index.html', videos=get_all_videos())
+    return render_template('index.html')
 
 @app.route("/log")
 @requires_auth
 def log_get():
     logs = get_log()
     return render_template('log.html', logs=logs)
+
+@app.route("/photo")
+@requires_auth
+def photo_get():
+    return render_template('photo.html')
 
 @app.route("/settings", methods=['GET', 'POST'])
 @requires_auth
@@ -277,6 +257,15 @@ def api_get_log():
     _JSON = json.dumps({'status': 'OK', 'logs': get_log()})
     return Response(_JSON, 200, mimetype="application/json") 
 
+@app.route("/api/upload_photo", methods=['POST'])
+@requires_auth
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(path.join(FOLDER_PIC, filename))
+    _JSON = json.dumps({'status': 'OK'})
+    return Response(_JSON, 200, mimetype="application/json") 
 
 
 @app.route("/api/settings")

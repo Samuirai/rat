@@ -43,7 +43,7 @@ rat.clear_yt_auth_url()
 rat.clear_yt_auth_code()
 
 FOLDER_VIDEO = "/tmp"
-
+rat.set_green_led(False)
 while True:
     for file_name in listdir(FOLDER_VIDEO):
         if file_name.split(".")[-1] == 'mp4' and file_name.startswith('done'):
@@ -53,7 +53,7 @@ while True:
                 if timestamp+5<time.time():
                     if path.getsize(video_file)>512:
                         rat.set_green_led(True)
-                        log("attempt to upload {0} with size: {1} MB".format(video_file, path.getsize(video_file)/1024.0))
+                        log("attempt to upload {0} with size: {1} MB".format(video_file, path.getsize(video_file)/1024.0/1024.0))
                         upload_process = subprocess.Popen("python youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)

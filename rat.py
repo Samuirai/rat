@@ -16,9 +16,9 @@ __MESSAGE = "/api/messages"
 __YT_AUTH_URL = "/api/yt_auth_url"
 __YT_AUTH_CODE = "/api/yt_auth_code"
 __LOG = "/api/log"
+__UPLOAD_PHOTO = "/api/upload_photo"
 __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
-YT_AUTH = '/YT_AUTH'
 
 def set_red_led(state):
     GPIO.output(23,state)
@@ -55,3 +55,8 @@ def post_log(log):
 
 def get_log():
     return requests.get(__URL+__LOG, auth=__AUTH).json()['logs']
+
+def upload_photo():
+    files = {'file': open('/tmp/photo.jpg', 'rb')}
+    return requests.post(__URL+__UPLOAD_PHOTO, auth=__AUTH, files=files).json()['status']
+
