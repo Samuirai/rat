@@ -34,7 +34,7 @@ while True:
     elif pressed and GPIO.input(17)==1:
         RED_LED = False
         rat.set_red_led(RED_LED)
-    else:
         pressed = False
         RED_LED = False
+
     time.sleep(0.1)
