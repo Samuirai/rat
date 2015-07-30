@@ -28,6 +28,7 @@ while True:
             rat.set_red_led(RED_LED)
         if counter>60:
             rat.set_green_led(True)
+            rat.post_log("shutdown system")
             p = subprocess.Popen("shutdown -P -h now", shell=True)
             p.communicate()
             exit(0)

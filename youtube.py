@@ -6,6 +6,7 @@ import os
 import random
 import sys
 import time
+import traceback
 
 from apiclient.discovery import build
 from apiclient.errors import HttpError
@@ -166,7 +167,14 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
         log("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 if __name__ == '__main__':
-    if len(sys.argv)>=2:
-        upload_video(sys.argv[1],sys.argv[2])
-    else:
-        get_authenticated_service()
+    for _ in xrange(0, 3):
+        try:
+            if len(sys.argv)>=2:
+                upload_video(sys.argv[1],sys.argv[2])
+                exit(0)
+            else:
+                get_authenticated_service()
+                exit(0)
+        except:
+            rat.post_log(str(traceback.format_exc()))
+        time.sleep(10)

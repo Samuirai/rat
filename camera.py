@@ -52,7 +52,6 @@ class ProcessingThread(threading.Thread):
         self.recording = False
         self.timestamp = time.time()
         self.log = log
-        self.log("processing thread init")
 
     def update_settings(self, settings):
         self.MIN_LEN = int(settings['min_len'])
@@ -108,7 +107,6 @@ class ProcessingThread(threading.Thread):
                         rat.set_red_led(True)
                         self.camera.split_recording("/tmp/part1_{0}.h264".format(self.timestamp), splitter_port=1)
                         # and save the last 2 seconds from the stream
-                        self.log("start recording and write part0")
                         self.write_stream("/tmp/part0_{0}.h264".format(self.timestamp))
                 self.MOTIONS_FIFO.task_done()
             now = time.time()
@@ -126,10 +124,6 @@ class ProcessingThread(threading.Thread):
                             ("part0_{0}.h264".format(self.timestamp), 
                             "part1_{0}.h264".format(self.timestamp), 
                             "done_{0}.mp4".format(self.timestamp)))
-
-            
-
-        self.log("exited")
 
 
 
@@ -189,6 +183,7 @@ with picamera.PiCamera() as camera:
                 pass
             
             if GPIO.input(17)==0 or int(time.time())%120==0:
+                print "update camera"
                 rat.set_green_led(True)
                 rat.set_red_led(True)
                 settings = rat.get_settings()
@@ -216,6 +211,7 @@ with picamera.PiCamera() as camera:
                     use_video_port=True, 
                     splitter_port=0,
                     resize=(320, 180))
+                rat.post_log("upload photo")
                 rat.upload_photo()
                 time.sleep(2)
                 rat.set_green_led(False)
@@ -226,8 +222,7 @@ with picamera.PiCamera() as camera:
     except KeyboardInterrupt:
         log("CTR+C Keyboard Interrupt")
     finally:
-        log(traceback.format_exc())
-        log("shutting down")
+        rat.post_log(traceback.format_exc())
         pt.running=False
 
         camera.stop_preview()

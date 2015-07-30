@@ -180,9 +180,18 @@ def setings():
     if request.method == 'POST':
         save_settings(request.form)
     SETTINGS = load_settings()
+
+    sunrise, sunset = sun.get_times()
+    is_it_dark = sun.is_it_dark()
     YT_AUTH_URL = get_yt_auth_url()
     YT_AUTH_CODE = get_yt_auth_code()
-    return render_template('settings.html', settings=SETTINGS, yt_auth_url=YT_AUTH_URL, yt_auth_code=YT_AUTH_CODE)
+    return render_template('settings.html', 
+        settings=SETTINGS,
+        yt_auth_url=YT_AUTH_URL,
+        yt_auth_code=YT_AUTH_CODE,
+        sunrise=sunrise,
+        sunset=sunset,
+        is_it_dark=is_it_dark)
 
 # ffmpeg -loglevel quiet -nostats -y -f h264 -r 5 -i /tmp/reh{0}.h264 -c:v copy -an -map 0:0 -f mp4 /home/stephan/reh/media/reh{0}.mp4 && rm /tmp/reh{0}.h264
 # ffmpeg -i input.flv -vf fps=1 out%d.png
@@ -312,6 +321,6 @@ def check_setup():
 if __name__ == "__main__":
     if check_setup():
         app.debug = True
-        app.run(host=config.SERVER_IP, port=config.SERVER_PORT)
+        app.run(host=config.SERVER_IP, port=config.SERVER_PORT, threaded=True)
     else:
         exit()

@@ -3,6 +3,7 @@ import subprocess
 import rat
 from os import path, makedirs, listdir, remove
 import time
+import traceback
 from datetime import datetime
 
 authenticated = True
@@ -54,17 +55,18 @@ while True:
                 if timestamp+5<time.time():
                     if path.getsize(video_file)>512:
                         rat.set_green_led(True)
-                        log("attempt to upload {0} with size: {1} MB".format(video_file, path.getsize(video_file)/1024.0/1024.0))
+                        log("attempt to upload {0} with size: {1}mb".format(video_file, int(path.getsize(video_file)/1024.0/1024.0)))
                         upload_process = subprocess.Popen("python /home/pi/rat/youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)
                         upload_process.communicate()
+
                         rat.set_green_led(False)
 
                     else:
                         remove(video_file)
-            except ValueError:
-                pass
+            except:
+                rat.post_log(str(traceback.format_exc()))
             time.sleep(5)
     time.sleep(5)
 

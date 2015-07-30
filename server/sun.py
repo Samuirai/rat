@@ -8,7 +8,6 @@ def dt_to_ts(dt):
 def get_times():
     fred      = ephem.Observer()
     today = datetime.today().replace(hour=15, minute=00, second=00)
-
     fred.date = today
     #red.date = "2015/7/27 15:00:00"
     fred.lat = str("52.478")

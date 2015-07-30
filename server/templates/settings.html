@@ -55,6 +55,12 @@ The Raspberry Pi has to be authenticated. Use this the url and enter the authent
 <input type="submit" value="submit auth token" onclick="post('/api/yt_auth_code', JSON.stringify({'code': document.getElementById('yt_auth_code').value}), 'settings_submit')">
 {% endif %}
 </div>
+<div>
+sunrise: {{sunrise}}<br>
+sunset: {{sunset}}<br>
+is_it_dark: {{is_it_dark}}<br>
+</div>
+
 <div id="settings">
   <form action="" method="post">
     
