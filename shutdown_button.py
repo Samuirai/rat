@@ -5,6 +5,9 @@ import subprocess
 import sys
 import rat
 
+time.sleep(60)
+rat.post_log("Shutdown Button Started")
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 

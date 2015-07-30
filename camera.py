@@ -13,6 +13,20 @@ import threading
 import traceback
 import RPi.GPIO as GPIO
 
+
+time.sleep(60)
+rat.post_log("Camera Started")
+for _ in xrange(0,10):
+    rat.set_red_led(True)
+    rat.set_green_led(False)
+    time.sleep(0.5)
+    rat.set_red_led(False)
+    rat.set_green_led(True)
+    time.sleep(0.5)
+
+rat.set_red_led(False)
+rat.set_green_led(False)
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)

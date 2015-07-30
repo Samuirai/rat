@@ -8,6 +8,9 @@ from datetime import datetime
 
 authenticated = True
 
+time.sleep(60)
+rat.post_log("Uploader Started")
+
 def log(msg):
     print msg
     rat.post_log(msg)
