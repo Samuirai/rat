@@ -13,14 +13,20 @@ import threading
 import traceback
 import RPi.GPIO as GPIO
 
+skip = False
 
-for _ in xrange(0,15):
-    rat.set_red_led(True)
-    rat.set_green_led(False)
-    time.sleep(1)
-    rat.set_red_led(False)
-    rat.set_green_led(True)
-    time.sleep(1)
+if len(sys.argv)>1:
+    if len(sys.argv[1]=='skip'):
+        skip = True
+
+if not skip:
+    for _ in xrange(0,15):
+        rat.set_red_led(True)
+        rat.set_green_led(False)
+        time.sleep(1)
+        rat.set_red_led(False)
+        rat.set_green_led(True)
+        time.sleep(1)
 
 
 rat.set_red_led(False)
