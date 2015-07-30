@@ -7,7 +7,7 @@ from server import sun
 import rat
 import time
 
-time.sleep(60)
+time.sleep(30)
 
 
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)

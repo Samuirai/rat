@@ -14,7 +14,7 @@ import traceback
 import RPi.GPIO as GPIO
 
 
-for _ in xrange(0,30):
+for _ in xrange(0,15):
     rat.set_red_led(True)
     rat.set_green_led(False)
     time.sleep(1)
@@ -46,6 +46,7 @@ PRE_MOTION = int(settings['pre_motion'])
 POST_MOTION = int(settings['post_motion'])
 ROTATION = int(settings['rotation'])
 PREVIEW = int(settings['preview'])
+DISABLE_RECORDING = int(settings['disable_recording'])
 
 def log(msg):
     sys.stdout.write(msg+"\n")
@@ -72,6 +73,7 @@ class ProcessingThread(threading.Thread):
         self.NR_VECTORS = int(settings['nr_vectors'])
         self.MOTIONS = int(settings['motions'])
         self.POST_MOTION = int(settings['post_motion'])
+        self.DISABLE_RECORDING = int(settings['disable_recording'])
 
     def write_stream(self, filename):
         # Write the entire content of the circular buffer to disk. No need to
@@ -103,7 +105,7 @@ class ProcessingThread(threading.Thread):
                 pass
             if nr_of_vectors:
                 # if enough vectors were over the thershold | and if button is active
-                if nr_of_vectors > self.NR_VECTORS and GPIO.input(24)==0:
+                if nr_of_vectors > self.NR_VECTORS and (GPIO.input(24)==0 and self.DISABLE_RECORDING==0):
                     # save the time of the last motion
                     self.lastMotion = time.time()
                     # increasse the motion counter
@@ -209,6 +211,7 @@ with picamera.PiCamera() as camera:
                 POST_MOTION = int(settings['post_motion'])
                 ROTATION = int(settings['rotation'])
                 PREVIEW = int(settings['preview'])
+                DISABLE_RECORDING = int(settings['disable_recording'])
                 pt.update_settings(settings)
                 if PREVIEW>0:
                     try:
