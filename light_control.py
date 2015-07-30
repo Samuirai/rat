@@ -15,7 +15,7 @@ wiringpi.pinMode(18,2)
 def is_it_dark():
     sunrise, sunset = sun.get_times()
     now = time.time()
-    if now > sunset or now < sunrise:
+    if now > sunset-3600 or now < sunrise+3600:
         return True
     return False
 

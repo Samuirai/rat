@@ -72,7 +72,7 @@ def clear_yt_auth_code():
 
 
 def post_log(log):
-    return post_wrapper(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0]}), auth=__AUTH)
+    return post_wrapper(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0], 'time': int(time.time())}), auth=__AUTH)
 
 def get_log():
     return get_wrapper(__URL+__LOG, auth=__AUTH).json()['logs']

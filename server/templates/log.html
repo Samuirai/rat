@@ -11,7 +11,12 @@ textarea {
 
 {% block content %}
 
-<textarea>{% for log in logs %}{{log['src']}} | {{log['log']}}
-{% endfor %}</textarea>
+<div id="log">
+{% for log in logs[::-1] %}
+    <div>
+    {{log['time']}} | {{log['src']}} | {{log['log']}}
+    </div>
+{% endfor %}
+</div>
 
 {% endblock %}
