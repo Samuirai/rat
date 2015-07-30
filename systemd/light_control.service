@@ -1,0 +1,9 @@
+[Unit]
+Description=Light Control
+
+[Service]
+Type=simple
+ExecStart=/home/pi/rat/light_control.py
+
+[Install]
+WantedBy=multi-user.target

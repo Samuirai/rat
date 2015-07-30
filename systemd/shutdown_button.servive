@@ -1,0 +1,9 @@
+[Unit]
+Description=Shutdown Button
+
+[Service]
+Type=simple
+ExecStart=/home/pi/rat/shutdown_button.py
+
+[Install]
+WantedBy=multi-user.target

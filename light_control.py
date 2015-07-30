@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import time
 import wiringpi2 as wiringpi
 import RPi.GPIO as GPIO
