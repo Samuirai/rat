@@ -24,7 +24,7 @@ function updateImage()
     newImage.src = "/static/media/pics/photo.jpg?" + new Date().getTime();
     console.log(newImage)
     document.getElementById("photo").src = newImage.src;
-    setTimeout(updateImage, document.getElementById("refreshrate").value);
+    setTimeout(updateImage, parseInt(document.getElementById("refreshrate").value)*1000);
 }
 updateImage();
 </script>
