@@ -16,7 +16,7 @@ import RPi.GPIO as GPIO
 skip = False
 
 if len(sys.argv)>1:
-    if len(sys.argv[1]=='skip'):
+    if sys.argv[1]=='skip':
         skip = True
 
 if not skip:
