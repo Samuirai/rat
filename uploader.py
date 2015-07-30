@@ -55,7 +55,7 @@ while True:
                     if path.getsize(video_file)>512:
                         rat.set_green_led(True)
                         log("attempt to upload {0} with size: {1} MB".format(video_file, path.getsize(video_file)/1024.0/1024.0))
-                        upload_process = subprocess.Popen("python youtube.py \"{0}\" \"{1}\"".format(
+                        upload_process = subprocess.Popen("python /home/pi/rat/youtube.py \"{0}\" \"{1}\"".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)
                         upload_process.communicate()
