@@ -32,6 +32,7 @@ MAGNITUDE = int(settings['magnitude'])
 PRE_MOTION = int(settings['pre_motion'])
 POST_MOTION = int(settings['post_motion'])
 ROTATION = int(settings['rotation'])
+PREVIEW = int(settings['preview'])
 
 def log(msg):
     sys.stdout.write(msg+"\n")
@@ -154,7 +155,8 @@ with picamera.PiCamera() as camera:
         camera.exposure_mode = 'night'
         camera.framerate = FPS
         camera.rotation = ROTATION
-        camera.start_preview()
+        if PREVIEW>0:
+            camera.start_preview()
         camera.start_recording(stream,
                                format='h264',
                                splitter_port=1,
@@ -194,6 +196,18 @@ with picamera.PiCamera() as camera:
                 PRE_MOTION = int(settings['pre_motion'])
                 POST_MOTION = int(settings['post_motion'])
                 ROTATION = int(settings['rotation'])
+                PREVIEW = int(settings['preview'])
+
+                if PREVIEW>0:
+                    try:
+                        camera.start_preview()
+                    except:
+                        pass
+                else:
+                    try:
+                        camera.stop_preview()
+                    except:
+                        pass
                 camera.rotation = ROTATION
                 camera.capture('/tmp/photo.jpg', 
                     use_video_port=True, 
