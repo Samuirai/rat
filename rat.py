@@ -2,6 +2,7 @@ import requests
 import json
 from server import config
 import sys
+import time
 import RPi.GPIO as GPIO
 GPIO.setwarnings(False)
 
@@ -20,6 +21,23 @@ __UPLOAD_PHOTO = "/api/upload_photo"
 __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 
+def get_wrapper(url, auth={}):
+    for attempt range(0,10):
+        try:
+            return requests.get(url, auth=auth).json()
+        except requests.exception.ConnectionError:
+            time.sleep(attempt**3+2)
+    return None
+
+
+def post_wrapper(url, data={}, auth={}):
+    for attempt range(0,10):
+        try:
+            return requests.post(url, data=data, auth=__AUTH)
+        except requests.exception.ConnectionError:
+            time.sleep(attempt**3+2)
+    return None
+
 def set_red_led(state):
     GPIO.output(23,state)
 
@@ -27,36 +45,36 @@ def set_green_led(state):
     GPIO.output(22,state)
 
 def get_settings():
-    return requests.get(__URL+__SETTINGS, auth=__AUTH).json()
+    return get_wrapper(__URL+__SETTINGS, auth=__AUTH).json()
 
 
 def post_yt_auth_url(url):
-    return requests.post(__URL+__YT_AUTH_URL, data=json.dumps({'url': url}), auth=__AUTH)
+    return post_wrapper(__URL+__YT_AUTH_URL, data=json.dumps({'url': url}), auth=__AUTH)
 
 def get_yt_auth_url():
-    return requests.get(__URL+__YT_AUTH_URL, auth=__AUTH).json()['url']
+    return get_wrapper(__URL+__YT_AUTH_URL, auth=__AUTH).json()['url']
 
 def clear_yt_auth_url():
-    return requests.get(__URL+__YT_AUTH_URL+__CLEAR, auth=__AUTH).json()['status']
+    return get_wrapper(__URL+__YT_AUTH_URL+__CLEAR, auth=__AUTH).json()['status']
 
 
 def post_yt_auth_code(code):
-    return requests.post(__URL+__YT_AUTH_CODE, data=json.dumps({'code': code}), auth=__AUTH)
+    return post_wrapper(__URL+__YT_AUTH_CODE, data=json.dumps({'code': code}), auth=__AUTH)
 
 def get_yt_auth_code():
-    return requests.get(__URL+__YT_AUTH_CODE, auth=__AUTH).json()['code']
+    return get_wrapper(__URL+__YT_AUTH_CODE, auth=__AUTH).json()['code']
 
 def clear_yt_auth_code():
-    return requests.get(__URL+__YT_AUTH_CODE+__CLEAR, auth=__AUTH).json()['status']
+    return get_wrapper(__URL+__YT_AUTH_CODE+__CLEAR, auth=__AUTH).json()['status']
 
 
 def post_log(log):
-    return requests.post(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0]}), auth=__AUTH)
+    return post_wrapper(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0]}), auth=__AUTH)
 
 def get_log():
-    return requests.get(__URL+__LOG, auth=__AUTH).json()['logs']
+    return get_wrapper(__URL+__LOG, auth=__AUTH).json()['logs']
 
 def upload_photo():
     files = {'file': open('/tmp/photo.jpg', 'rb')}
-    return requests.post(__URL+__UPLOAD_PHOTO, auth=__AUTH, files=files).json()['status']
+    return post_wrapper(__URL+__UPLOAD_PHOTO, auth=__AUTH, files=files).json()['status']
 
