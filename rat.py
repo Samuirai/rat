@@ -22,7 +22,7 @@ __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 
 def get_wrapper(url, auth={}):
-    for attempt range(0,10):
+    for attempt in xrange(0,10):
         try:
             return requests.get(url, auth=auth).json()
         except requests.exception.ConnectionError:
@@ -31,7 +31,7 @@ def get_wrapper(url, auth={}):
 
 
 def post_wrapper(url, data={}, auth={}):
-    for attempt range(0,10):
+    for attempt in xrange(0,10):
         try:
             return requests.post(url, data=data, auth=__AUTH)
         except requests.exception.ConnectionError:
