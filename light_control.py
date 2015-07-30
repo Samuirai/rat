@@ -21,9 +21,9 @@ while True:
     # only turn LEDs on if its getting dark, and recording enabled
     if sun.is_it_dark() and GPIO.input(24)==0:
         ir_led = float(rat.get_settings()['ir_led'])/100.0
-        rat.post_log("IT'S NIGHT! set LEDs to: {0}%%".format(ir_led))
+        rat.post_log("LEDs on: {0}%%".format(ir_led))
         wiringpi.pwmWrite(18, int(1024*ir_led))
     else:
-        rat.post_log("IT'S DAY! disable LEDs")
+        rat.post_log("LEDs off")
         wiringpi.pwmWrite(18, 0)
     time.sleep(30.0)

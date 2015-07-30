@@ -13,8 +13,8 @@ textarea {
 {% block content %}
 
 
-
-<img id="photo" class="center" src="/static/media/pics/photo.jpg" width="100%">
+check for new picture every <input value="60" type="text" id="refreshrate"> seconds.
+<img id="photo" class="center" src="/static/media/pics/photo.jpg" width="75%">
 
 <script>
 
@@ -24,7 +24,7 @@ function updateImage()
     newImage.src = "/static/media/pics/photo.jpg?" + new Date().getTime();
     console.log(newImage)
     document.getElementById("photo").src = newImage.src;
-    setTimeout(updateImage, 1000);
+    setTimeout(updateImage, document.getElementById("refreshrate").value);
 }
 updateImage();
 </script>
