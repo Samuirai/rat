@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style>
+textarea {
+    width: 50%;
+    height: 500px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+
+<img id="photo" class="center" src="/static/media/pics/photo.jpg" width="100%">
+
+<script>
+
+function updateImage()
+{
+    var newImage = new Image();
+    newImage.src = "/static/media/pics/photo.jpg?" + new Date().getTime();
+    console.log(newImage)
+    document.getElementById("photo").src = newImage.src;
+    setTimeout(updateImage, 1000);
+}
+updateImage();
+</script>
+
+
+{% endblock %}
