@@ -1,1 +1,1 @@
-{"motions": "10", "min_len": "2", "video_height": "720", "nr_vectors": "15", "post_motion": "2", "ir_led": "70", "max_len": "30", "pre_motion": "2", "magnitude": "21", "fps": "30", "rotation": "180", "video_width": "1280", "preview": "0", "disable_recording": 0}
+{"disable_recording": "1", "video_width": "1280", "motions": "10", "min_len": "2", "video_height": "720", "nr_vectors": "15", "post_motion": "2", "ir_led": "50", "max_len": "30", "pre_motion": "2", "magnitude": "21", "fps": "30", "rotation": "180", "preview": "0"}
