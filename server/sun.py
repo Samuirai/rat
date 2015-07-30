@@ -20,3 +20,10 @@ def get_times():
     sunset = fred.next_setting(ephem.Sun()) #Sunset
     sunset = dt_to_ts(sunset.datetime())
     return sunrise, sunset
+
+def is_it_dark():
+    sunrise, sunset = get_times()
+    now = time.time()
+    if now > sunset-3600 or now < sunrise+3600:
+        return True
+    return False
