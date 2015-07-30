@@ -12,7 +12,7 @@ def log(msg):
     rat.post_log(msg)
 
 def is_not_authenticated():
-    p = subprocess.Popen("python youtube.py", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, bufsize=1)
+    p = subprocess.Popen("python /home/pi/rat/youtube.py", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, bufsize=1)
     out = p.communicate()[0]
     if not out:
         return False
@@ -20,7 +20,7 @@ def is_not_authenticated():
         return out.split()[8]
 
 def authenticate(code):
-    p = subprocess.Popen("./youtube.py", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, bufsize=1)
+    p = subprocess.Popen("/home/pi/rat/youtube.py", stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, bufsize=1)
     out = p.communicate(code)[0]
 
 auth_url = is_not_authenticated()

@@ -30,10 +30,13 @@ def get_wrapper(url, auth={}):
     return None
 
 
-def post_wrapper(url, data={}, auth={}):
+def post_wrapper(url, data={}, auth={}, files=None):
     for attempt in xrange(0,10):
         try:
-            return requests.post(url, data=data, auth=__AUTH)
+            if not files:
+                return requests.post(url, data=data, auth=__AUTH)
+            else:
+                return requests.post(url, data=data, auth=__AUTH, files=files)
         except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
     return None
