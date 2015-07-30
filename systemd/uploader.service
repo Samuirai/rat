@@ -1,9 +1,0 @@
-[Unit]
-Description=YouTube Upload Service
-
-[Service]
-Type=simple
-ExecStart=/home/pi/rat/uploader.py
-
-[Install]
-WantedBy=multi-user.target
