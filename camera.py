@@ -45,11 +45,7 @@ class ProcessingThread(threading.Thread):
         self.stream = stream
         self.MOTIONS_FIFO = MOTIONS_FIFO
         self.RECORDED_VIDEOS_FIFO = RECORDED_VIDEOS_FIFO
-        self.MIN_LEN = int(settings['min_len'])
-        self.MAX_LEN = int(settings['max_len'])
-        self.NR_VECTORS = int(settings['nr_vectors'])
-        self.MOTIONS = int(settings['motions'])
-        self.POST_MOTION = int(settings['post_motion'])
+        self.update_settings(settings)
         self.running = True
         self.lastMotion = time.time()
         self.motionsCounter = 0
@@ -57,6 +53,13 @@ class ProcessingThread(threading.Thread):
         self.timestamp = time.time()
         self.log = log
         self.log("processing thread init")
+
+    def update_settings(self, settings):
+        self.MIN_LEN = int(settings['min_len'])
+        self.MAX_LEN = int(settings['max_len'])
+        self.NR_VECTORS = int(settings['nr_vectors'])
+        self.MOTIONS = int(settings['motions'])
+        self.POST_MOTION = int(settings['post_motion'])
 
     def write_stream(self, filename):
         # Write the entire content of the circular buffer to disk. No need to
@@ -197,7 +200,7 @@ with picamera.PiCamera() as camera:
                 POST_MOTION = int(settings['post_motion'])
                 ROTATION = int(settings['rotation'])
                 PREVIEW = int(settings['preview'])
-
+                pt.update_settings(settings)
                 if PREVIEW>0:
                     try:
                         camera.start_preview()
@@ -214,7 +217,7 @@ with picamera.PiCamera() as camera:
                     splitter_port=0,
                     resize=(320, 180))
                 rat.upload_photo()
-                time.sleep(0.1)
+                time.sleep(2)
                 rat.set_green_led(False)
                 rat.set_red_led(False)
 
