@@ -24,7 +24,7 @@ __AUTH = config.HTTP_AUTH
 def get_wrapper(url, auth={}):
     for attempt in xrange(0,10):
         try:
-            return requests.get(url, auth=auth).json()
+            return requests.get(url, auth=auth)
         except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
     return None
