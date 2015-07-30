@@ -168,13 +168,17 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
 
 if __name__ == '__main__':
     for _ in xrange(0, 3):
-        try:
-            if len(sys.argv)>=2:
+        
+        if len(sys.argv)>=2:
+            try:
                 upload_video(sys.argv[1],sys.argv[2])
-                exit(0)
-            else:
+            except:
+                rat.post_log(str(traceback.format_exc()))
+            exit(0)
+        else:
+            try:
                 get_authenticated_service()
-                exit(0)
-        except:
-            rat.post_log(str(traceback.format_exc()))
+            except:
+                rat.post_log(str(traceback.format_exc()))
+            exit(0)
         time.sleep(10)
