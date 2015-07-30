@@ -14,15 +14,14 @@ import traceback
 import RPi.GPIO as GPIO
 
 
-time.sleep(60)
-rat.post_log("Camera Started")
-for _ in xrange(0,10):
+for _ in xrange(0,30):
     rat.set_red_led(True)
     rat.set_green_led(False)
-    time.sleep(0.5)
+    time.sleep(1)
     rat.set_red_led(False)
     rat.set_green_led(True)
-    time.sleep(0.5)
+    time.sleep(1)
+
 
 rat.set_red_led(False)
 rat.set_green_led(False)
@@ -184,6 +183,7 @@ with picamera.PiCamera() as camera:
                                intra_period = 0,
                                resize=(640, 480))
         pt.start()
+        rat.post_log("Camera Started")
         while True:
             try:
                 (part1, part2, done) = RECORDED_VIDEOS_FIFO.get(False)

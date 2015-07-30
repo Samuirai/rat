@@ -8,14 +8,14 @@ import rat
 import time
 
 time.sleep(60)
-rat.post_log("Light Control Started")
+
 
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 Pi_rev = wiringpi.piBoardRev()
 wiringpi.wiringPiSetupGpio() 
 wiringpi.pinMode(18,2)
 
-
+rat.post_log("Light Control Started")
 
 while True:
     # only turn LEDs on if its getting dark, and recording enabled

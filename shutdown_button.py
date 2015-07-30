@@ -6,7 +6,6 @@ import sys
 import rat
 
 time.sleep(60)
-rat.post_log("Shutdown Button Started")
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -14,6 +13,8 @@ GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 RED_LED = True
 
 pressed = False
+
+rat.post_log("Shutdown Button Started")
 
 while True:
     if not pressed and GPIO.input(17)==0:
