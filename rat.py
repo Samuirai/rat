@@ -25,7 +25,7 @@ def get_wrapper(url, auth={}):
     for attempt in xrange(0,10):
         try:
             return requests.get(url, auth=auth).json()
-        except requests.exception.ConnectionError:
+        except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
     return None
 
@@ -34,7 +34,7 @@ def post_wrapper(url, data={}, auth={}):
     for attempt in xrange(0,10):
         try:
             return requests.post(url, data=data, auth=__AUTH)
-        except requests.exception.ConnectionError:
+        except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
     return None
 
