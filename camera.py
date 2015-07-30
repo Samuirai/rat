@@ -28,6 +28,10 @@ if not skip:
         rat.set_green_led(True)
         time.sleep(1)
 
+def log(msg):
+    sys.stdout.write("[camera] "+str(msg)+"\n")
+    sys.stdout.flush()
+
 
 rat.set_red_led(False)
 rat.set_green_led(False)
@@ -40,6 +44,7 @@ MOTIONS_FIFO = Queue.Queue()
 RECORDED_VIDEOS_FIFO = Queue.Queue()
 
 settings = rat.get_settings()
+log("got settings")
 for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps', 'rotation']:
     if atr not in settings:
         exit("{0} is missing in settings".format(atr))
@@ -54,9 +59,6 @@ ROTATION = int(settings['rotation'])
 PREVIEW = int(settings['preview'])
 DISABLE_RECORDING = int(settings['disable_recording'])
 
-def log(msg):
-    sys.stdout.write(msg+"\n")
-    sys.stdout.flush()
 
 class ProcessingThread(threading.Thread):
     def __init__(self, camera, stream, MOTIONS_FIFO, RECORDED_VIDEOS_FIFO, log, settings={}):
@@ -168,13 +170,14 @@ with picamera.PiCamera() as camera:
     pt = ProcessingThread(camera, stream, MOTIONS_FIFO, RECORDED_VIDEOS_FIFO, log, settings)
     pt.daemon = True
     try:
-        print (VIDEO_WIDTH, VIDEO_HEIGHT)
+        log("setting up cam")
         camera.resolution = (VIDEO_WIDTH, VIDEO_HEIGHT)
         camera.exposure_mode = 'night'
         camera.framerate = FPS
         camera.rotation = ROTATION
         if PREVIEW>0:
             camera.start_preview()
+        log("start recording")
         camera.start_recording(stream,
                                format='h264',
                                splitter_port=1,
