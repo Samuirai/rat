@@ -6,6 +6,7 @@ from os import path, makedirs, listdir, remove
 from functools import wraps
 from lockfile import locked
 import config
+import sun
 
 def check_auth(username, password):
     """This function is called to check if a username /
