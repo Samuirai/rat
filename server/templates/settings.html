@@ -59,6 +59,7 @@ The Raspberry Pi has to be authenticated. Use this the url and enter the authent
 sunrise: {{sunrise}}<br>
 sunset: {{sunset}}<br>
 is_it_dark: {{is_it_dark}}<br>
+seconds_since_last_contact: {{seconds_since_last_contact}}<br>
 </div>
 
 <div id="settings">
@@ -102,9 +103,15 @@ is_it_dark: {{is_it_dark}}<br>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        IR LED %: 
+        IR LED % @ night: 
       </div>
       <input class="small" type="text" name="ir_led" value={{settings['ir_led']}}>
+    </div>
+    <div class="form_line">
+      <div class="form_desc">
+        IR LED % @ day: 
+      </div>
+      <input class="small" type="text" name="ir_led_day" value={{settings['ir_led_day']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">

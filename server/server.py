@@ -7,6 +7,7 @@ from functools import wraps
 from lockfile import locked
 import config
 import sun
+import time
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -47,6 +48,9 @@ LOCK_MESSAGE = path.join("/tmp", "lock_message")
 FILE_SETTINGS = path.abspath("settings")
 LOCK_SETTINGS = path.join("/tmp", "lock_settings")
 
+FILE_HEARTBEAT = path.abspath("HEARTBEAT")
+LOCK_HEARTBEAT = path.join("/tmp", "lock_HEARTBEAT")
+
 FILE_YT_AUTH_URL = path.abspath("yt_auth_url")
 LOCK_YT_AUTH_URL = path.join("/tmp", "lock_yt_auth_url")
 
@@ -64,6 +68,21 @@ def log(severity, msg):
     print _log
     write_log(_log)
 
+@locked(LOCK_HEARTBEAT)
+def alive():
+    _FD = open(FILE_HEARTBEAT, 'w')
+    _FD.write(time.time())
+    _FD.close()
+
+@locked(LOCK_HEARTBEAT)
+def still_alive():
+    _FD = open(FILE_HEARTBEAT, 'r')
+    last_notice = _FD.read()
+    _FD.close()
+    if last_notice:
+        return time.time()-last_notice
+    else:
+        return -1
 
 @locked(LOCK_SETTINGS)
 def load_settings():
@@ -186,13 +205,15 @@ def setings():
     is_it_dark = sun.is_it_dark()
     YT_AUTH_URL = get_yt_auth_url()
     YT_AUTH_CODE = get_yt_auth_code()
+    seconds_since_last_contact = still_alive()
     return render_template('settings.html', 
         settings=SETTINGS,
         yt_auth_url=YT_AUTH_URL,
         yt_auth_code=YT_AUTH_CODE,
         sunrise=sunrise,
         sunset=sunset,
-        is_it_dark=is_it_dark)
+        is_it_dark=is_it_dark,
+        seconds_since_last_contact=seconds_since_last_contact)
 
 # ffmpeg -loglevel quiet -nostats -y -f h264 -r 5 -i /tmp/reh{0}.h264 -c:v copy -an -map 0:0 -f mp4 /home/stephan/reh/media/reh{0}.mp4 && rm /tmp/reh{0}.h264
 # ffmpeg -i input.flv -vf fps=1 out%d.png
@@ -257,6 +278,7 @@ def api_clear_yt_auth_code():
 @app.route("/api/log", methods=['POST'])
 @requires_auth
 def api_post_log():
+    alive()
     _JSON = request.get_json(force=True)
     write_log(json.dumps(_JSON))
     return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
@@ -270,6 +292,7 @@ def api_get_log():
 @app.route("/api/upload_photo", methods=['POST'])
 @requires_auth
 def upload_file():
+    alive()
     if request.method == 'POST':
         file = request.files['file']
         filename = secure_filename(file.filename)
@@ -282,6 +305,7 @@ def upload_file():
 @app.route("/api/ping")
 @requires_auth
 def api_settings():
+    alive()
     SETTINGS = load_settings()
     return Response(json.dumps(SETTINGS), 200, mimetype="application/json")
 
@@ -298,9 +322,13 @@ def check_setup():
         log(LOG_DEBUG, "make dirs: {0}".format(FOLDER_PIC))
         makedirs(FOLDER_PIC)
     if not path.exists(FILE_SETTINGS):
-        log(LOG_DEBUG, "make config file: {0}".format(FILE_SETTINGS))
+        log(LOG_DEBUG, "make settings file: {0}".format(FILE_SETTINGS))
         FD_SETTINGS = open(FILE_SETTINGS, "w")
         FD_SETTINGS.close()
+    if not path.exists(FILE_HEARTBEAT):
+        log(LOG_DEBUG, "make config file: {0}".format(FILE_HEARTBEAT))
+        FD_HEARTBEAT = open(FILE_HEARTBEAT, "w")
+        FD_HEARTBEAT.close()
     if not path.exists(FILE_MESSAGE):
         log(LOG_DEBUG, "make messages file: {0}".format(FILE_MESSAGE))
         _FD = open(FILE_MESSAGE, "w")
