@@ -71,7 +71,7 @@ def log(severity, msg):
 @locked(LOCK_HEARTBEAT)
 def alive():
     _FD = open(FILE_HEARTBEAT, 'w')
-    _FD.write(time.time())
+    _FD.write(str(time.time()))
     _FD.close()
 
 @locked(LOCK_HEARTBEAT)
