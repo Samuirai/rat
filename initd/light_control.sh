@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte LED Light Control"
-        /home/pi/rat/light_control.py
+        /home/pi/rat/light_control.py >> /tmp/log
         ;;
  
     stop)

@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Pi Camera service"
-        /home/pi/rat/camera.py
+        /home/pi/rat/camera.py >> /tmp/log
         ;;
  
     stop)

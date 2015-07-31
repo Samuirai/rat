@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Shutdown Button"
-        /home/pi/rat/shutdown_button.py
+        /home/pi/rat/shutdown_button.py >> /tmp/log
         ;;
  
     stop)

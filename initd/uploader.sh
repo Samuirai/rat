@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Youtube Upload Service"
-        /home/pi/rat/uploader.py
+        /home/pi/rat/uploader.py >> /tmp/log
         ;;
  
     stop)
