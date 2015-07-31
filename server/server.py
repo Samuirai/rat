@@ -80,7 +80,7 @@ def still_alive():
     last_notice = _FD.read()
     _FD.close()
     if last_notice:
-        return time.time()-last_notice
+        return time.time()-float(last_notice)
     else:
         return -1
 
