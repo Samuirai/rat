@@ -213,26 +213,27 @@ with picamera.PiCamera() as camera:
                 rat.set_green_led(True)
                 rat.set_red_led(True)
                 settings = rat.get_settings()
-                FPS = int(settings['fps'])
-                VIDEO_WIDTH = int(settings['video_width'])
-                VIDEO_HEIGHT = int(settings['video_height'])
-                MAGNITUDE = int(settings['magnitude'])
-                PRE_MOTION = int(settings['pre_motion'])
-                POST_MOTION = int(settings['post_motion'])
-                ROTATION = int(settings['rotation'])
-                PREVIEW = int(settings['preview'])
-                DISABLE_RECORDING = int(settings['disable_recording'])
-                pt.update_settings(settings)
-                if PREVIEW>0:
-                    try:
-                        camera.start_preview()
-                    except:
-                        pass
-                else:
-                    try:
-                        camera.stop_preview()
-                    except:
-                        pass
+                if settings:
+                    FPS = int(settings['fps'])
+                    VIDEO_WIDTH = int(settings['video_width'])
+                    VIDEO_HEIGHT = int(settings['video_height'])
+                    MAGNITUDE = int(settings['magnitude'])
+                    PRE_MOTION = int(settings['pre_motion'])
+                    POST_MOTION = int(settings['post_motion'])
+                    ROTATION = int(settings['rotation'])
+                    PREVIEW = int(settings['preview'])
+                    DISABLE_RECORDING = int(settings['disable_recording'])
+                    pt.update_settings(settings)
+                    if PREVIEW>0:
+                        try:
+                            camera.start_preview()
+                        except:
+                            pass
+                    else:
+                        try:
+                            camera.stop_preview()
+                        except:
+                            pass
                 camera.rotation = ROTATION
                 camera.capture('/tmp/photo.jpg', 
                     use_video_port=True, 

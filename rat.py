@@ -48,7 +48,11 @@ def set_green_led(state):
     GPIO.output(22,state)
 
 def get_settings():
-    return get_wrapper(__URL+__SETTINGS, auth=__AUTH).json()
+    settings = get_wrapper(__URL+__SETTINGS, auth=__AUTH)
+    if settings:
+        return settings.json()
+    else:
+        return None
 
 
 def post_yt_auth_url(url):
