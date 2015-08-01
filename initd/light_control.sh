@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte LED Light Control"
-        /home/pi/rat/light_control.py >> /tmp/log
+        nohup /home/pi/rat/light_control.py >> /tmp/log &
         ;;
  
     stop)
@@ -27,7 +27,7 @@ case "$1" in
  #Aktion wenn restart uebergeben wird
         echo "Restarte LED Light Control"
         killall light_control.py
-        /home/pi/rat/light_control.py
+        nohup /home/pi/rat/light_control.py >> /tmp/log &
         ;;
  *)
  #Standard Aktion wenn start|stop|restart nicht passen

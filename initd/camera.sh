@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Pi Camera service"
-        /home/pi/rat/camera.py >> /tmp/log
+        nohup /home/pi/rat/camera.py >> /tmp/log &
         ;;
  
     stop)
@@ -27,7 +27,7 @@ case "$1" in
  #Aktion wenn restart uebergeben wird
         echo "Restarte Pi Camera service"
         killall camera.py
-        /home/pi/rat/camera.py
+        nohup /home/pi/rat/camera.py >> /tmp/log &
         ;;
  *)
  #Standard Aktion wenn start|stop|restart nicht passen

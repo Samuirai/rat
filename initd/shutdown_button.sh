@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Shutdown Button"
-        /home/pi/rat/shutdown_button.py >> /tmp/log
+        nohup /home/pi/rat/shutdown_button.py >> /tmp/log &
         ;;
  
     stop)
@@ -27,7 +27,7 @@ case "$1" in
  #Aktion wenn restart uebergeben wird
         echo "Restarte Shutdown Button"
         killall shutdown_button.py
-        /home/pi/rat/shutdown_button.py
+        nohup /home/pi/rat/shutdown_button.py >> /tmp/log &
         ;;
  *)
  #Standard Aktion wenn start|stop|restart nicht passen

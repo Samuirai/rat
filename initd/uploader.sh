@@ -14,7 +14,7 @@ case "$1" in
     start)
  #Aktion wenn start uebergeben wird
         echo "Starte Youtube Upload Service"
-        /home/pi/rat/uploader.py >> /tmp/log
+        nohup /home/pi/rat/uploader.py >> /tmp/log &
         ;;
  
     stop)
@@ -27,7 +27,7 @@ case "$1" in
  #Aktion wenn restart uebergeben wird
         echo "Restarte Youtube Upload Service"
         killall uploader.py
-        /home/pi/rat/uploader.py
+        nohup /home/pi/rat/uploader.py >> /tmp/log &
         ;;
  *)
  #Standard Aktion wenn start|stop|restart nicht passen
