@@ -22,7 +22,7 @@ __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 
 def get_wrapper(url, auth={}):
-    for attempt in xrange(0,10):
+    for attempt in xrange(0,2):
         try:
             return requests.get(url, auth=auth)
         except requests.exceptions.ConnectionError:
@@ -31,7 +31,7 @@ def get_wrapper(url, auth={}):
 
 
 def post_wrapper(url, data={}, auth={}, files=None):
-    for attempt in xrange(0,10):
+    for attempt in xrange(0,2):
         try:
             if not files:
                 return requests.post(url, data=data, auth=__AUTH)
