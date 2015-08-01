@@ -5,11 +5,14 @@ from os import path, makedirs, listdir, remove
 import time
 import traceback
 from datetime import datetime
-
+import RPi.GPIO as GPIO
+import sys
 authenticated = True
 
-time.sleep(60)
+if len(sys.argv)<2:
+    time.sleep(60)
 
+GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def log(msg):
     print msg
@@ -65,11 +68,12 @@ while True:
                         upload_process.communicate()
 
                         rat.set_green_led(False)
-
+                        log("done uploading a video")
+                        
                     else:
                         remove(video_file)
             except:
                 rat.post_log(str(traceback.format_exc()))
-            time.sleep(5)
-    time.sleep(5)
+            time.sleep(10)
+    time.sleep(10)
 

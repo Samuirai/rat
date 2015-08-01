@@ -114,6 +114,7 @@ class ProcessingThread(threading.Thread):
             if nr_of_vectors:
                 # if enough vectors were over the thershold | and if button is active
                 if nr_of_vectors > self.NR_VECTORS and (GPIO.input(24)==0 and self.DISABLE_RECORDING==0):
+                    #print nr_of_vectors
                     # save the time of the last motion
                     self.lastMotion = time.time()
                     # increasse the motion counter

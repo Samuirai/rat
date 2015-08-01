@@ -98,6 +98,7 @@ def dump_settings(SETTINGS=SETTINGS):
     _FD.close()
     return SETTINGS
 
+@locked(LOCK_SETTINGS)
 def save_settings(form):
     SETTINGS = {}
     for key in form.keys():
@@ -105,7 +106,6 @@ def save_settings(form):
         dump_settings(SETTINGS)
     SETTINGS = load_settings()
     return SETTINGS
-
 
 @locked(LOCK_YT_AUTH_URL)
 def write_yt_auth_url(_JSON):
@@ -166,6 +166,13 @@ def get_log():
 def write_log(_MSG):
     _FD = open(FILE_LOG, "a")
     _FD.write(_MSG+"\n")
+    _FD.close()
+
+
+@locked(LOCK_LOG)
+def clear_log():
+    _FD = open(FILE_LOG, "w")
+    _FD.write("")
     _FD.close()
 
 
@@ -281,6 +288,12 @@ def api_post_log():
     alive()
     _JSON = request.get_json(force=True)
     write_log(json.dumps(_JSON))
+    return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
+
+@app.route("/api/log/clear", methods=['POST'])
+@requires_auth
+def api_post_log():
+    clear_log()
     return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
 
 @app.route("/api/yt_auth_code", methods=['GET'])
