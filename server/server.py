@@ -292,7 +292,7 @@ def api_post_log():
 
 @app.route("/api/log/clear", methods=['POST'])
 @requires_auth
-def api_post_log():
+def api_clear_log():
     clear_log()
     return Response(json.dumps({'status': 'OK'}), 200, mimetype="application/json") 
 
