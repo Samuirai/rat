@@ -50,7 +50,7 @@ MAGNITUDE = 15
 PRE_MOTION = 2
 POST_MOTION = 2
 ROTATION = 0
-PREVIEW = 0
+PREVIEW = 0 
 DISABLE_RECORDING = 0
 
 settings = rat.get_settings()
@@ -187,6 +187,7 @@ with picamera.PiCamera() as camera:
         camera.exposure_mode = 'night'
         camera.framerate = FPS
         camera.rotation = ROTATION
+        camera.meter_mode = 'matrix'
         if PREVIEW>0:
             camera.start_preview()
         log("start recording")
@@ -220,7 +221,7 @@ with picamera.PiCamera() as camera:
                 pass
             
             if GPIO.input(17)==0 or int(time.time())%120==0:
-                print "update camera"
+                rat.post_log("update camera settings")
                 rat.set_green_led(True)
                 rat.set_red_led(True)
                 settings = rat.get_settings()
@@ -245,13 +246,16 @@ with picamera.PiCamera() as camera:
                             camera.stop_preview()
                         except:
                             pass
-                camera.rotation = ROTATION
-                camera.capture('/tmp/photo.jpg', 
-                    use_video_port=True, 
-                    splitter_port=0,
-                    resize=(320, 180))
-                rat.post_log("upload photo")
-                rat.upload_photo()
+                    camera.rotation = ROTATION
+                try:
+                    camera.capture('/tmp/photo.jpg', 
+                        use_video_port=True, 
+                        splitter_port=0,
+                        resize=(320, 180))
+                    rat.post_log("upload photo")
+                    rat.upload_photo()
+                except:
+                    pass
                 time.sleep(2)
                 rat.set_green_led(False)
                 rat.set_red_led(False)

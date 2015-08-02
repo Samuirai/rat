@@ -30,7 +30,7 @@ while True:
             rat.post_log("It's day. Set LEDs to: {0}%%".format(ir_led))
             wiringpi.pwmWrite(18, int(1024*ir_led))
         else:
-            rat.post_log("LEDs disabled".format(ir_led))
+            rat.post_log("LEDs disabled")
             wiringpi.pwmWrite(18, 0)
 
     time.sleep(30.0)
