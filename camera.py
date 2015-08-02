@@ -43,21 +43,32 @@ GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 MOTIONS_FIFO = Queue.Queue()
 RECORDED_VIDEOS_FIFO = Queue.Queue()
 
-settings = rat.get_settings()
-log("got settings")
-for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps', 'rotation']:
-    if atr not in settings:
-        exit("{0} is missing in settings".format(atr))
+FPS = 30
+VIDEO_WIDTH = 1280
+VIDEO_HEIGHT = 720
+MAGNITUDE = 15
+PRE_MOTION = 2
+POST_MOTION = 2
+ROTATION = 0
+PREVIEW = 0
+DISABLE_RECORDING = 0
 
-FPS = int(settings['fps'])
-VIDEO_WIDTH = int(settings['video_width'])
-VIDEO_HEIGHT = int(settings['video_height'])
-MAGNITUDE = int(settings['magnitude'])
-PRE_MOTION = int(settings['pre_motion'])
-POST_MOTION = int(settings['post_motion'])
-ROTATION = int(settings['rotation'])
-PREVIEW = int(settings['preview'])
-DISABLE_RECORDING = int(settings['disable_recording'])
+settings = rat.get_settings()
+if settings:
+    log("got settings")
+    for atr in ['min_len', 'max_len', 'nr_vectors', 'magnitude', 'video_height', 'video_width', 'motions', 'fps', 'rotation']:
+        if atr not in settings:
+            exit("{0} is missing in settings".format(atr))
+
+    FPS = int(settings['fps'])
+    VIDEO_WIDTH = int(settings['video_width'])
+    VIDEO_HEIGHT = int(settings['video_height'])
+    MAGNITUDE = int(settings['magnitude'])
+    PRE_MOTION = int(settings['pre_motion'])
+    POST_MOTION = int(settings['post_motion'])
+    ROTATION = int(settings['rotation'])
+    PREVIEW = int(settings['preview'])
+    DISABLE_RECORDING = int(settings['disable_recording'])
 
 
 class ProcessingThread(threading.Thread):

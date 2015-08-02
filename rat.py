@@ -59,20 +59,36 @@ def post_yt_auth_url(url):
     return post_wrapper(__URL+__YT_AUTH_URL, data=json.dumps({'url': url}), auth=__AUTH)
 
 def get_yt_auth_url():
-    return get_wrapper(__URL+__YT_AUTH_URL, auth=__AUTH).json()['url']
+    r = get_wrapper(__URL+__YT_AUTH_URL, auth=__AUTH)
+    if r:
+        return r.json()['url']
+    else:
+        return None
 
 def clear_yt_auth_url():
-    return get_wrapper(__URL+__YT_AUTH_URL+__CLEAR, auth=__AUTH).json()['status']
+    r = get_wrapper(__URL+__YT_AUTH_URL+__CLEAR, auth=__AUTH)
+    if r:
+        return r.json()['status']
+    else:
+        return None
 
 
 def post_yt_auth_code(code):
     return post_wrapper(__URL+__YT_AUTH_CODE, data=json.dumps({'code': code}), auth=__AUTH)
 
 def get_yt_auth_code():
-    return get_wrapper(__URL+__YT_AUTH_CODE, auth=__AUTH).json()['code']
+    r = get_wrapper(__URL+__YT_AUTH_CODE, auth=__AUTH)
+    if r:
+        return r.json()['code']
+    else:
+        return None
 
 def clear_yt_auth_code():
-    return get_wrapper(__URL+__YT_AUTH_CODE+__CLEAR, auth=__AUTH).json()['status']
+    r = get_wrapper(__URL+__YT_AUTH_CODE+__CLEAR, auth=__AUTH)
+    if r:
+        return r.json()['status']
+    else:
+        return None
 
 
 def post_log(log):
@@ -84,5 +100,9 @@ def get_log():
 
 def upload_photo():
     files = {'file': open('/tmp/photo.jpg', 'rb')}
-    return post_wrapper(__URL+__UPLOAD_PHOTO, auth=__AUTH, files=files).json()['status']
+    return post_wrapper(__URL+__UPLOAD_PHOTO, auth=__AUTH, files=files)
+    if r:
+        return r.json()['status']
+    else:
+        return None
 
