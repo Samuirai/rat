@@ -55,22 +55,29 @@ rat.set_green_led(False)
 while True:
     for file_name in listdir(FOLDER_VIDEO):
         if file_name.split(".")[-1] == 'mp4' and file_name.startswith('done'):
+
             try:
                 timestamp = float(file_name.split(".")[0].split("_")[1])
                 video_file = path.join(FOLDER_VIDEO, file_name)
+                log("found video {0}".format(video_file))
                 if timestamp+5<time.time():
-                    if path.getsize(video_file)>512:
+                    if path.getsize(video_file)>64:
                         rat.set_green_led(True)
                         log("attempt to upload {0} with size: {1}mb".format(video_file, int(path.getsize(video_file)/1024.0/1024.0)))
                         upload_process = subprocess.Popen("python /home/pi/rat/youtube.py \"{0}\" \"{1}\" >> /tmp/log".format(
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)
-                        upload_process.communicate()
-
+                        #upload_process.communicate()
+                        for _ in xrange(0,3):
+                            if not upload_process.poll():
+                                log("still not done uploading. sleep")
+                                time.sleep(10)
                         rat.set_green_led(False)
-                        log("done uploading a video")
+                        
+                        log("continue with next video")
                         
                     else:
+                        log("remove {0}".format(video_file))
                         remove(video_file)
             except:
                 rat.post_log(str(traceback.format_exc()))
