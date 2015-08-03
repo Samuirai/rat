@@ -71,7 +71,7 @@ while True:
                         for _ in xrange(0,3):
                             if not upload_process.poll():
                                 log("still not done uploading. sleep")
-                                time.sleep(10)
+                                time.sleep(20)
                         rat.set_green_led(False)
                         
                         log("continue with next video")
