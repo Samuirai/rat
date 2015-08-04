@@ -10,7 +10,7 @@ import sys
 authenticated = True
 
 if len(sys.argv)<2:
-    time.sleep(60)
+    time.sleep(10)
 
 GPIO.setup(24, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 

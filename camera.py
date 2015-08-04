@@ -20,7 +20,7 @@ if len(sys.argv)>1:
         skip = True
 
 if not skip:
-    for _ in xrange(0,15):
+    for _ in xrange(0,5):
         rat.set_red_led(True)
         rat.set_green_led(False)
         time.sleep(1)
