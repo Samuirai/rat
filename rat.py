@@ -21,12 +21,21 @@ __UPLOAD_PHOTO = "/api/upload_photo"
 __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 
+def log(msg):
+    print msg
+    l = open("/tmp/log", "a")
+    l.write("{2} - {0}: {1}\n".format(sys.argv[0], msg, time.time()))
+    l.close()
+
 def get_wrapper(url, auth={}):
     for attempt in xrange(0,2):
         try:
             return requests.get(url, auth=auth)
         except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
+    print "GOING FOR REBOOT"
+    p = subprocess.Popen("reboot", shell=True)
+    p.communicate()
     return None
 
 
@@ -91,9 +100,9 @@ def clear_yt_auth_code():
         return None
 
 
-def post_log(log):
-    print log
-    return post_wrapper(__URL+__LOG, data=json.dumps({'log': log, 'src': sys.argv[0], 'time': int(time.time())}), auth=__AUTH)
+def post_log(msg):
+    log(msg)
+    return post_wrapper(__URL+_msg, data=json.dumps({'log': msg, 'src': sys.argv[0], 'time': int(time.time())}), auth=__AUTH)
 
 def get_log():
     return get_wrapper(__URL+__LOG, auth=__AUTH).json()['logs']

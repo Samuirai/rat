@@ -68,7 +68,7 @@ while True:
                             path.abspath(video_file), 
                             str(datetime.fromtimestamp(timestamp))), shell=True)
                         #upload_process.communicate()
-                        for _ in xrange(0,3):
+                        for _ in xrange(0,4):
                             if not upload_process.poll():
                                 log("still not done uploading. sleep")
                                 time.sleep(20)

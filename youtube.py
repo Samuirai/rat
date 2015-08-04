@@ -146,6 +146,7 @@ def resumable_upload(insert_request):
 
 def log(msg):
     print msg
+    rat.post_log(msg)
 
 def upload_video(file_name, title, description='', keywords='rats', category='15', privacyStatus='unlisted', log=log):
     options = {
@@ -159,7 +160,7 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
     youtube = get_authenticated_service()
     try:
         yt_id = initialize_upload(youtube, options)
-        rat.post_log("Youtube Video Uploaded: https://www.youtube.com/watch?v={0}".format(yt_id))
+        rat.post_log("https://www.youtube.com/watch?v={0}".format(yt_id))
         if yt_id:
             os.remove(file_name)
         return yt_id
@@ -167,8 +168,8 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
         log("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
 
 if __name__ == '__main__':
-    for _ in xrange(0, 3):
-        
+    for i in xrange(0, 3):
+        log("try to upload a video, attemp: {0}".format(i))
         if len(sys.argv)>=2:
             try:
                 upload_video(sys.argv[1],sys.argv[2])
