@@ -145,7 +145,7 @@ def resumable_upload(insert_request):
             time.sleep(sleep_seconds)
 
 def log(msg):
-    print msg
+    #print msg
     rat.post_log(msg)
 
 def upload_video(file_name, title, description='', keywords='rats', category='15', privacyStatus='unlisted', log=log):

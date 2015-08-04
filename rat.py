@@ -22,7 +22,7 @@ __CLEAR = "/clear"
 __AUTH = config.HTTP_AUTH
 
 def log(msg):
-    print msg
+    #print msg
     l = open("/tmp/log", "a")
     l.write("{2} - {0}: {1}\n".format(sys.argv[0], msg, time.time()))
     l.close()
