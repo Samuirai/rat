@@ -9,6 +9,8 @@ import config
 import sun
 import time
 
+app = Flask(__name__)
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid."""
@@ -26,10 +28,10 @@ def requires_auth(f):
             return authenticate()
         return f(*args, **kwargs)
     return decorated
-#print(path.isdir("/home/el"))
-#print(path.exists("/home/el/myfile.txt"))
 
-app = Flask(__name__)
+@app.template_filter('datetime')
+def datetime_filter(s):
+    return datetime.fromtimestamp(float(s)).strftime("%a. %H:%M:%S")
 
 LOG_DEBUG = "?"
 LOG_INFO = "*"
@@ -80,7 +82,7 @@ def still_alive():
     last_notice = _FD.read()
     _FD.close()
     if last_notice:
-        return time.time()-float(last_notice)
+        return int(time.time()-float(last_notice))
     else:
         return -1
 
@@ -194,7 +196,9 @@ def index():
 @requires_auth
 def log_get():
     logs = get_log()
-    return render_template('log.html', logs=logs)
+    seconds_since_last_contact = still_alive()
+    return render_template('log.html', logs=logs,
+        seconds_since_last_contact=seconds_since_last_contact)
 
 @app.route("/photo")
 @requires_auth
@@ -356,7 +360,7 @@ def check_setup():
         _FD.close()
 
     load_settings()
-    log(LOG_INFO, "settings loaded: {0}".format(SETTINGS))
+    #log(LOG_INFO, "settings loaded: {0}".format(SETTINGS))
     return True
 
 

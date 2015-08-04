@@ -56,10 +56,18 @@ The Raspberry Pi has to be authenticated. Use this the url and enter the authent
 {% endif %}
 </div>
 <div>
-sunrise: {{sunrise}}<br>
-sunset: {{sunset}}<br>
-is_it_dark: {{is_it_dark}}<br>
-seconds_since_last_contact: {{seconds_since_last_contact}}<br>
+Sunrise probably at: <b>{{sunrise|datetime}}</b><br>
+Sunset probably at: <b>{{sunset|datetime}}</b><br>
+It's currently: <b>{% if is_it_dark %}Night{% else %}Day{% endif %}</b><br>
+
+Time since last contact: 
+{% if seconds_since_last_contact>120 %}
+    <span style="color: #f00; font-weight: bold;">{{ seconds_since_last_contact }}s - probably down</span>
+{% elif seconds_since_last_contact>30 %}
+    <span style="color: #fa0; font-weight: bold;">{{ seconds_since_last_contact }}s - ?</span>
+{% else %}
+    <span style="color: #0e0; font-weight: bold;">{{ seconds_since_last_contact }}s - OK</span>
+{% endif %}
 </div>
 
 <div id="settings">
@@ -73,67 +81,67 @@ seconds_since_last_contact: {{seconds_since_last_contact}}<br>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        how many vectors have to be over certain magnitude: 
+        how much area has to be affected to count as movement: 
       </div>
-      <input class="small" type="text" name="nr_vectors" value={{settings['nr_vectors']}}>
+      <input class="small" type="text" name="nr_vectors" value={{settings['nr_vectors']}}> &lt;- 
     </div>
     <div class="form_line">
       <div class="form_desc">
-        min magnitude of vectors: 
+        and how strong should those changes be: 
       </div>
-      <input class="small" type="text" name="magnitude" value={{settings['magnitude']}}>
+      <input class="small" type="text" name="magnitude" value={{settings['magnitude']}}> &lt;- 
     </div>
     <div class="form_line">
       <div class="form_desc">
         how many detections to count as a recording: 
       </div>
-      <input class="small" type="text" name="motions" value={{settings['motions']}}>
+      <input class="small" type="text" name="motions" value={{settings['motions']}}> &lt;- 
     </div>
     <div class="form_line">
       <div class="form_desc">
         in what timeframe should those motions occur: 
       </div>
-      <input class="small" type="text" name="min_len" value={{settings['min_len']}}>
+      <input class="small" type="text" name="min_len" value={{settings['min_len']}}> &lt;- 
     </div>
     <div class="form_line">
       <div class="form_desc">
-        fps: 
+        fps of camera: 
       </div>
       <input class="small" type="text" name="fps" value={{settings['fps']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        IR LED % @ night: 
+        IR LED (0-100)% @ night: 
       </div>
       <input class="small" type="text" name="ir_led" value={{settings['ir_led']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        IR LED % @ day: 
+        IR LED (0-100)% @ day: 
       </div>
       <input class="small" type="text" name="ir_led_day" value={{settings['ir_led_day']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        seconds before motion: 
+        take seconds before motion: 
       </div>
       <input class="small" type="text" name="pre_motion" value={{settings['pre_motion']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        seconds after motion: 
+        keep seconds after motion: 
       </div>
       <input class="small" type="text" name="post_motion" value={{settings['post_motion']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        rotation: 
+        rotation (0, 90, 180, 270): 
       </div>
       <input class="small" type="text" name="rotation" value={{settings['rotation']}}>
     </div>
     <div class="form_line">
       <div class="form_desc">
-        preview: 
+        enable preview on HDMI port: 
       </div>
       <input class="small" type="text" name="preview" value={{settings['preview']}}>
     </div>
