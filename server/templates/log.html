@@ -7,27 +7,28 @@ textarea {
     height: 500px;
 }
 
-div.log_src {
+span.log_src {
     border-radius: 5px;
     padding: 0px 6px;
     text-align: right;
+    width: 70px;
 }
 
-div.log_src.uploader {
+span.log_src.uploader {
     background-color: #bbf;
 }
-div.log_src.youtube {
+span.log_src.youtube {
     background-color: #fbb;
     
 }
-div.log_src.camera {
+span.log_src.camera {
     background-color: #bfb;
 }
-div.log_src.light {
+span.log_src.light {
     background-color: #ffb;
 
 }
-div.log_src.power {
+span.log_src.power {
     background-color: #bbb;
 }
 
@@ -45,6 +46,7 @@ tr:hover td {
 
 td.time, td.log_src {
     border-right: 1px solid #ddd;
+    width: 90px;
 }
 
 </style>
@@ -69,19 +71,19 @@ Time since last contact:
         <td class="log_src">
 
             {% if 'uploader.py' in log['src'] %}
-                <div class="log_src uploader"> uploader <i class="fa fa-upload"></i></div>
+                <span class="log_src uploader"> uploader <i class="fa fa-upload"></i></span>
             {% endif %}
             {% if 'youtube.py' in log['src'] %}
-                <div class="log_src youtube"> youtube <i class="fa fa-youtube"></i></div>
+                <span class="log_src youtube"> youtube <i class="fa fa-youtube"></i></span>
             {% endif %}
             {% if 'camera.py' in log['src'] %}
-                <div class="log_src camera"> camera <i class="fa fa-video-camera"></i></div>
+                <span class="log_src camera"> camera <i class="fa fa-video-camera"></i></span>
             {% endif %}
             {% if 'light_control.py' in log['src'] %}
-                <div class="log_src light"> light <i class="fa fa-lightbulb-o"></i></div>
+                <span class="log_src light"> light <i class="fa fa-lightbulb-o"></i></span>
             {% endif %}
             {% if 'shutdown_button.py' in log['src'] %}
-                <div class="log_src power"> power <i class="fa fa-power-off"></i></div>
+                <span class="log_src power"> power <i class="fa fa-power-off"></i></span>
             {% endif %}
         </td>
         <td>{{log['log']}}</td>

@@ -26,13 +26,13 @@ while True:
         if sun.is_it_dark() and GPIO.input(24)==0 and int(settings['disable_recording'])==0:
             ir_led = float(settings['ir_led'])/100.0
             if last_status!='night':
-                rat.post_log("It's night. Set LEDs to: {0}%%".format(ir_led))
+                rat.post_log("It's night. Set LEDs to: {0}%".format(ir_led))
                 last_status = 'night'
             wiringpi.pwmWrite(18, int(1024*ir_led))
         elif GPIO.input(24)==0 and int(settings['disable_recording'])==0:
             ir_led = float(settings['ir_led_day'])/100.0
             if last_status!='day':
-                rat.post_log("It's day. Set LEDs to: {0}%%".format(ir_led))
+                rat.post_log("It's day. Set LEDs to: {0}%".format(ir_led))
                 last_status = 'day'
             wiringpi.pwmWrite(18, int(1024*ir_led))
         else:
