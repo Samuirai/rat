@@ -73,16 +73,16 @@ while True:
                         if upload_process.poll() == None:
                             log("still not done uploading. sleep")
                             time.sleep(30)
-
-                    log("kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
-                    try:
-                        killpg(upload_process.pid, signal.SIGTERM)
-                    except OSError:
-                        pass
-                    try:
-                        remove(video_file)
-                    except OSError:
-                        pass
+                    if upload_process.poll() == None:
+                        log("kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
+                        try:
+                            killpg(upload_process.pid, signal.SIGTERM)
+                        except OSError:
+                            pass
+                        try:
+                            remove(video_file)
+                        except OSError:
+                            pass
                     rat.set_green_led(False)
                     
                 else:
