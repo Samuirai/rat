@@ -117,12 +117,13 @@ def resumable_upload(insert_request):
     while response is None:
         try:
             status, response = insert_request.next_chunk()
-            if 'id' in response:
-                log("Video id '%s' was successfully uploaded." % response['id'])
-                return response['id']
-            else:
-                log("The upload failed with an unexpected response: %s" % response)
-                return None
+            if response:
+                if 'id' in response:
+                    log("Video id '%s' was successfully uploaded." % response['id'])
+                    return response['id']
+                else:
+                    log("The upload failed with an unexpected response: %s" % response)
+                    return None
         except HttpError, e:
             if e.resp.status in RETRIABLE_STATUS_CODES:
                 error = "A retriable HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
