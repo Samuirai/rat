@@ -69,12 +69,12 @@ while True:
                         path.abspath(video_file), 
                         str(datetime.fromtimestamp(timestamp))), shell=True)
                     #upload_process.communicate()
-                    for _ in xrange(0,10):
+                    for _ in xrange(0,15):
                         if upload_process.poll() == None:
-                            log("still not done uploading. sleep")
+                            log("waiting for upload to finish")
                             time.sleep(30)
                     if upload_process.poll() == None:
-                        log("kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
+                        log("upload still hangs. Maybe better kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
                         try:
                             killpg(upload_process.pid, signal.SIGTERM)
                         except OSError:

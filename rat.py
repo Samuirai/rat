@@ -33,6 +33,7 @@ def get_wrapper(url, auth={}):
         try:
             return requests.get(url, auth=auth)
         except requests.exceptions.ConnectionError:
+            log("GET error. sleep and try again. attempt: {0}".format(attempt))
             time.sleep(attempt**3+2)
     log("GOING FOR REBOOT")
     p = subprocess.Popen("reboot", shell=True)
