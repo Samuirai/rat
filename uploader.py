@@ -55,7 +55,8 @@ FOLDER_VIDEO = "/tmp"
 rat.set_green_led(False)
 while True:
     files = [file_name for file_name in listdir(FOLDER_VIDEO) if file_name.split(".")[-1] == 'mp4' and file_name.startswith('done')]
-    for file_name in files:
+    if len(files)>0:
+        file_name = files[-1]
         try:
             timestamp = float(file_name.split(".")[0].split("_")[1])
             video_file = path.join(FOLDER_VIDEO, file_name)
@@ -76,6 +77,9 @@ while True:
                     log("kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
                     try:
                         killpg(upload_process.pid, signal.SIGTERM)
+                    except OSError:
+                        pass
+                    try:
                         remove(video_file)
                     except OSError:
                         pass
@@ -86,6 +90,5 @@ while True:
                     remove(video_file)
         except:
             rat.post_log(str(traceback.format_exc()))
-        time.sleep(10)
-    time.sleep(20)
+    time.sleep(10)
 
