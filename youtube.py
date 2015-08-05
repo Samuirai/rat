@@ -144,7 +144,7 @@ def resumable_upload(insert_request):
             sleep_seconds = random.random() * max_sleep
             log("Sleeping %f seconds and then retrying..." % sleep_seconds)
             time.sleep(sleep_seconds)
-        time.sleep(1)
+        time.sleep(0.5)
 
 def log(msg):
     #print msg
