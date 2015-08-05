@@ -1,7 +1,8 @@
 #!/usr/bin/python
 import subprocess
 import rat
-from os import path, makedirs, listdir, remove, killpg, signal
+from os import path, makedirs, listdir, remove, killpg
+import signal
 import time
 import traceback
 from datetime import datetime
