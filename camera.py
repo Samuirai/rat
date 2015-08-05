@@ -213,7 +213,7 @@ with picamera.PiCamera() as camera:
                 (part1, part2, done) = RECORDED_VIDEOS_FIFO.get(False)
                 if part1 and part2 and done:
                     #executionString = "avconv -loglevel quiet -y -r {0} -i /tmp/{1}.h264 -vcodec copy -r 30 /tmp/{1}.mp4 && rm /tmp/{1}.h264".format(__FPS, videoIDlist.pop(0))
-                    executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2} && rm /tmp/{0} /tmp/{1} && mv /tmp/_{2} /tmp/{2}".format(part1, part2, done, FPS)
+                    executionString = "avconv -loglevel panic -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2} && rm /tmp/{0} /tmp/{1} && mv /tmp/_{2} /tmp/{2}".format(part1, part2, done, FPS)
                     #executionString = "avconv -loglevel quiet -y -r {3} -i concat:/tmp/{0}\|/tmp/{1} -c copy -r {3} /tmp/_{2}".format(part1, part2, done, FPS)
                     log(executionString)
                     subprocess.Popen(executionString, shell=True)

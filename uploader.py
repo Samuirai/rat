@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import subprocess
 import rat
-from os import path, makedirs, listdir, remove
+from os import path, makedirs, listdir, remove, killpg
 import time
 import traceback
 from datetime import datetime
@@ -53,34 +53,38 @@ rat.clear_yt_auth_code()
 FOLDER_VIDEO = "/tmp"
 rat.set_green_led(False)
 while True:
-    for file_name in listdir(FOLDER_VIDEO):
-        if file_name.split(".")[-1] == 'mp4' and file_name.startswith('done'):
+    files = [file_name for file_name in listdir(FOLDER_VIDEO) if file_name.split(".")[-1] == 'mp4' and file_name.startswith('done')]
+    for file_name in files:
+        try:
+            timestamp = float(file_name.split(".")[0].split("_")[1])
+            video_file = path.join(FOLDER_VIDEO, file_name)
+            log("found video {0} with backlog: ".format(video_file, len(files)))
+            if timestamp+5<time.time():
+                if path.getsize(video_file)>64:
+                    rat.set_green_led(True)
+                    log("attempt to upload {0} with size: {1}mb".format(video_file, int(path.getsize(video_file)/1024.0/1024.0)))
+                    upload_process = subprocess.Popen("python /home/pi/rat/youtube.py \"{0}\" \"{1}\" >> /tmp/log".format(
+                        path.abspath(video_file), 
+                        str(datetime.fromtimestamp(timestamp))), shell=True)
+                    #upload_process.communicate()
+                    for _ in xrange(0,10):
+                        if not upload_process.poll():
+                            log("still not done uploading. sleep")
+                            time.sleep(30)
 
-            try:
-                timestamp = float(file_name.split(".")[0].split("_")[1])
-                video_file = path.join(FOLDER_VIDEO, file_name)
-                log("found video {0}".format(video_file))
-                if timestamp+5<time.time():
-                    if path.getsize(video_file)>64:
-                        rat.set_green_led(True)
-                        log("attempt to upload {0} with size: {1}mb".format(video_file, int(path.getsize(video_file)/1024.0/1024.0)))
-                        upload_process = subprocess.Popen("python /home/pi/rat/youtube.py \"{0}\" \"{1}\" >> /tmp/log".format(
-                            path.abspath(video_file), 
-                            str(datetime.fromtimestamp(timestamp))), shell=True)
-                        #upload_process.communicate()
-                        for _ in xrange(0,4):
-                            if not upload_process.poll():
-                                log("still not done uploading. sleep")
-                                time.sleep(20)
-                        rat.set_green_led(False)
-                        
-                        log("continue with next video")
-                        
-                    else:
-                        log("remove {0}".format(video_file))
+                    log("kill process: {0} and remove: {1}".format(upload_process.pid, video_file))
+                    try:
+                        killpg(upload_process.pid, signal.SIGTERM)
                         remove(video_file)
-            except:
-                rat.post_log(str(traceback.format_exc()))
-            time.sleep(10)
-    time.sleep(10)
+                    except OSError:
+                        pass
+                    rat.set_green_led(False)
+                    
+                else:
+                    log("remove {0}".format(video_file))
+                    remove(video_file)
+        except:
+            rat.post_log(str(traceback.format_exc()))
+        time.sleep(10)
+    time.sleep(20)
 

@@ -116,7 +116,6 @@ def resumable_upload(insert_request):
     retry = 0
     while response is None:
         try:
-            log("Uploading file...")
             status, response = insert_request.next_chunk()
             if 'id' in response:
                 log("Video id '%s' was successfully uploaded." % response['id'])
@@ -169,9 +168,9 @@ def upload_video(file_name, title, description='', keywords='rats', category='15
 
 if __name__ == '__main__':
     for i in xrange(0, 3):
-        log("try to upload a video, attemp: {0}".format(i))
         if len(sys.argv)>=2:
             try:
+                log("try to upload {1} video, attemp: {0}".format(i, sys.argv[1]))
                 upload_video(sys.argv[1],sys.argv[2])
             except:
                 rat.post_log(str(traceback.format_exc()))

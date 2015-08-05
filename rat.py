@@ -4,6 +4,7 @@ from server import config
 import sys
 import time
 import RPi.GPIO as GPIO
+import subprocess
 GPIO.setwarnings(False)
 
 GPIO.setmode(GPIO.BCM)
@@ -28,19 +29,19 @@ def log(msg):
     l.close()
 
 def get_wrapper(url, auth={}):
-    for attempt in xrange(0,2):
+    for attempt in xrange(0,4):
         try:
             return requests.get(url, auth=auth)
         except requests.exceptions.ConnectionError:
             time.sleep(attempt**3+2)
-    print "GOING FOR REBOOT"
+    log("GOING FOR REBOOT")
     p = subprocess.Popen("reboot", shell=True)
     p.communicate()
     return None
 
 
 def post_wrapper(url, data={}, auth={}, files=None):
-    for attempt in xrange(0,2):
+    for attempt in xrange(0,4):
         try:
             if not files:
                 return requests.post(url, data=data, auth=__AUTH)
