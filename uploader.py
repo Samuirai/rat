@@ -69,7 +69,7 @@ while True:
                         str(datetime.fromtimestamp(timestamp))), shell=True)
                     #upload_process.communicate()
                     for _ in xrange(0,10):
-                        if not upload_process.poll():
+                        if upload_process.poll() == None:
                             log("still not done uploading. sleep")
                             time.sleep(30)
 
