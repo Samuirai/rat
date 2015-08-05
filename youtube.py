@@ -117,7 +117,7 @@ def resumable_upload(insert_request):
     while response is None:
         try:
             status, response = insert_request.next_chunk()
-            log("next_chunk. status: {0} | response: {1}".format(status, response))
+            #log("next_chunk. status: {0} | response: {1}".format(status, response))
             if response:
                 if 'id' in response:
                     log("Video id '%s' was successfully uploaded." % response['id'])
