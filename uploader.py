@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import subprocess
 import rat
-from os import path, makedirs, listdir, remove, killpg
+from os import path, makedirs, listdir, remove, killpg, signal
 import time
 import traceback
 from datetime import datetime
@@ -58,7 +58,7 @@ while True:
         try:
             timestamp = float(file_name.split(".")[0].split("_")[1])
             video_file = path.join(FOLDER_VIDEO, file_name)
-            log("found video {0} with backlog: ".format(video_file, len(files)))
+            log("found video {0} with backlog: {1}".format(video_file, len(files)))
             if timestamp+5<time.time():
                 if path.getsize(video_file)>64:
                     rat.set_green_led(True)
