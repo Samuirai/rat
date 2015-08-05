@@ -255,7 +255,7 @@ with picamera.PiCamera() as camera:
                     rat.post_log("upload photo")
                     rat.upload_photo()
                 except:
-                    pass
+                    rat.post_log(str(traceback.format_exc()))
                 time.sleep(2)
                 rat.set_green_led(False)
                 rat.set_red_led(False)
